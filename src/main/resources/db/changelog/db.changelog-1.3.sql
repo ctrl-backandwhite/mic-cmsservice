@@ -92,17 +92,17 @@ VALUES
 
 -- 18. Accessories bundle
 ('SLD-018', '2x1 en Accesorios Seleccionados', 'Lleva dos y paga uno en fundas, cables y más',
- 'https://images.unsplash.com/photo-1625772452887-b18f7d506221?w=1920&q=80',
+ 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=1920&q=80',
  '/?ofertas=true&category=Accesorios', 'Aprovechar', 18, false, NOW()),
 
 -- 19. Cyber Monday
 ('SLD-019', 'Cyber Monday: Ofertas Digitales', 'Software, suscripciones y servicios cloud con mega descuentos',
- 'https://images.unsplash.com/photo-1563986768609-322da13575f2?w=1920&q=80',
+ 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1920&q=80',
  '/?ofertas=true', 'Ver Ciber Ofertas', 19, false, NOW()),
 
 -- 20. Members exclusive
 ('SLD-020', 'Exclusivo Miembros NX036', 'Descuentos especiales solo para miembros registrados',
- 'https://images.unsplash.com/photo-1553729459-afe8f2e2ed23?w=1920&q=80',
+ 'https://images.unsplash.com/photo-1557821552-17105176677c?w=1920&q=80',
  '/?ofertas=true', 'Unirse Ahora', 20, false, NOW())
 
 ON CONFLICT (id) DO NOTHING;
