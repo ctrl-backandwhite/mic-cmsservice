@@ -52,7 +52,7 @@ VALUES
 
 -- 10. Sports
 ('SLD-010', 'Rebajas Deportivas de Temporada', 'Ropa y equipamiento deportivo desde $14.99',
- 'https://images.unsplash.com/photo-1461896836934-bd45ba40b588?w=1920&q=80',
+ 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1920&q=80',
  '/?ofertas=true&category=Deportes', 'Ver Deportes', 10, false, NOW()),
 
 -- 11. Appliances
