@@ -1,0 +1,24 @@
+package com.backandwhite.api.dto.out;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
+import java.time.Instant;
+
+@Data
+@With
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(description = "Slide del carrusel")
+public class SlideDtoOut {
+    private String id;
+    private String title;
+    private String subtitle;
+    private String imageUrl;
+    private String link;
+    private String buttonText;
+    private int position;
+    private boolean active;
+    private Instant createdAt;
+    private Instant updatedAt;
+}

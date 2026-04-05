@@ -1,0 +1,21 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mic-cmsservice:local
+    restart: unless-stopped
+    environment:
+      PROFILE: local
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5406/db06
+      SPRING_DATASOURCE_USERNAME: user06
+      SPRING_DATASOURCE_PASSWORD: pass06
+      SPRING_DATA_REDIS_HOST: host.docker.internal
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_DATABASE: 6
+      KAFKA_BOOTSTRAP_SERVERS: host.docker.internal:9092
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "6006:8080"
