@@ -75,6 +75,11 @@ public class LoyaltyRepositoryImpl implements LoyaltyRepository {
     }
 
     @Override
+    public Optional<LoyaltyRule> findActiveRuleByAction(com.backandwhite.domain.valueobject.LoyaltyAction action) {
+        return ruleJpa.findByActionAndActiveTrue(action).map(mapper::toRuleDomain);
+    }
+
+    @Override
     public List<LoyaltyRule> findAllRules() {
         return ruleJpa.findAll().stream()
                 .map(mapper::toRuleDomain)

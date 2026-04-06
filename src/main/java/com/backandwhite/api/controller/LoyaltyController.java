@@ -155,6 +155,20 @@ public class LoyaltyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(loyaltyApiMapper.toTransactionDto(transaction));
     }
 
+    @GetMapping("/redemption-rate")
+    @Operation(summary = "Obtener tasa de canjeo (puntos por dólar)")
+    public ResponseEntity<java.util.Map<String, Object>> getRedemptionRate(
+            @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth) {
+        var rules = loyaltyUseCase.findAllRules();
+        int pointsPerDollar = rules.stream()
+                .filter(r -> r.getAction() == com.backandwhite.domain.valueobject.LoyaltyAction.REDEMPTION
+                        && r.isActive())
+                .findFirst()
+                .map(com.backandwhite.domain.model.LoyaltyRule::getPointsPerUnit)
+                .orElse(100); // default 100 pts = $1
+        return ResponseEntity.ok(java.util.Map.of("pointsPerDollar", pointsPerDollar));
+    }
+
     @GetMapping("/history")
     @Operation(summary = "Historial de transacciones de puntos")
     public ResponseEntity<PaginationDtoOut<LoyaltyTransactionDtoOut>> getHistory(

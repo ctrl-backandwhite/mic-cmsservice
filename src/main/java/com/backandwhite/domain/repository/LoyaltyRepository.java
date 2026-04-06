@@ -3,6 +3,7 @@ package com.backandwhite.domain.repository;
 import com.backandwhite.domain.model.LoyaltyRule;
 import com.backandwhite.domain.model.LoyaltyTier;
 import com.backandwhite.domain.model.LoyaltyTransaction;
+import com.backandwhite.domain.valueobject.LoyaltyAction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -27,6 +28,8 @@ public interface LoyaltyRepository {
     LoyaltyRule updateRule(LoyaltyRule rule);
 
     Optional<LoyaltyRule> findRuleById(String id);
+
+    Optional<LoyaltyRule> findActiveRuleByAction(LoyaltyAction action);
 
     List<LoyaltyRule> findAllRules();
 

@@ -1,5 +1,5 @@
 package com.backandwhite.domain.valueobject;
 
 public enum LoyaltyAction {
-    PURCHASE, REVIEW, REFERRAL, REGISTRATION
+    PURCHASE, REVIEW, REFERRAL, REGISTRATION, REDEMPTION
 }

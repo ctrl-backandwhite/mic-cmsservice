@@ -104,6 +104,18 @@ public class GiftCardRepositoryImpl implements GiftCardRepository {
         return cardJpa.findByRecipientEmail(email, pageable).map(mapper::toDomain);
     }
 
+    @Override
+    public List<GiftCard> findExpiredCards(java.time.LocalDate today) {
+        return cardJpa.findByStatusInAndExpiryDateBefore(
+                java.util.List.of(
+                        com.backandwhite.domain.valueobject.GiftCardStatus.PENDING,
+                        com.backandwhite.domain.valueobject.GiftCardStatus.ACTIVE),
+                today)
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
+
     // Transactions
 
     @Override

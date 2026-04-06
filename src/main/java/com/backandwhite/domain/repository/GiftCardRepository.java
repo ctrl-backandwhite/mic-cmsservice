@@ -6,6 +6,7 @@ import com.backandwhite.domain.model.GiftCardTransaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,6 +39,8 @@ public interface GiftCardRepository {
     Page<GiftCard> findByBuyerId(String buyerId, Pageable pageable);
 
     Page<GiftCard> findByRecipientEmail(String email, Pageable pageable);
+
+    List<GiftCard> findExpiredCards(LocalDate today);
 
     // Transactions
     GiftCardTransaction saveTransaction(GiftCardTransaction transaction);
