@@ -1,7 +1,6 @@
 package com.backandwhite.application.usecase.impl;
 
-import com.backandwhite.api.dto.PaginationDtoOut;
-import com.backandwhite.api.util.PageableUtils;
+import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.application.usecase.GiftCardUseCase;
 import com.backandwhite.domain.model.GiftCard;
 import com.backandwhite.domain.model.GiftCardDesign;
@@ -9,8 +8,11 @@ import com.backandwhite.domain.model.GiftCardTransaction;
 import com.backandwhite.domain.repository.GiftCardRepository;
 import com.backandwhite.domain.valueobject.GiftCardStatus;
 import com.backandwhite.domain.valueobject.GiftCardTransactionType;
-import com.backandwhite.infrastructure.message.kafka.producer.CmsEventProducerService;
+import com.backandwhite.application.port.out.CmsEventPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +22,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
 import static com.backandwhite.domain.exception.Message.*;
@@ -34,7 +35,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     private static final int MAX_CODE_RETRIES = 10;
 
     private final GiftCardRepository giftCardRepository;
-    private final Optional<CmsEventProducerService> cmsEventProducer;
+    private final CmsEventPort cmsEventPort;
 
     // Designs
 
@@ -100,7 +101,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
                 .createdAt(Instant.now())
                 .build());
 
-        cmsEventProducer.ifPresent(p -> p.publishGiftCardPurchased(
+        cmsEventPort.publishGiftCardPurchased(
                 saved.getId(),
                 saved.getCode(),
                 saved.getBuyerId(),
@@ -111,7 +112,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
                 "EUR",
                 saved.getMessage(),
                 saved.getExpiryDate() != null ? saved.getExpiryDate().toString() : null,
-                saved.getDesignId()));
+                saved.getDesignId());
 
         return saved;
     }
@@ -132,18 +133,20 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
 
     @Override
     @Transactional(readOnly = true)
-    public PaginationDtoOut<GiftCard> findAll(Map<String, Object> filters, int page, int size, String sortBy,
+    public PageResult<GiftCard> findAll(Map<String, Object> filters, int page, int size, String sortBy,
             boolean ascending) {
-        var pageable = PageableUtils.toPageable(page, size, sortBy, ascending);
-        return PageableUtils.toResponse(giftCardRepository.findAll(filters, pageable));
+        Pageable pageable = PageRequest.of(page, size,
+                ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+        return PageResult.from(giftCardRepository.findAll(filters, pageable));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PaginationDtoOut<GiftCard> findByBuyerId(String buyerId, int page, int size, String sortBy,
+    public PageResult<GiftCard> findByBuyerId(String buyerId, int page, int size, String sortBy,
             boolean ascending) {
-        var pageable = PageableUtils.toPageable(page, size, sortBy, ascending);
-        return PageableUtils.toResponse(giftCardRepository.findByBuyerId(buyerId, pageable));
+        Pageable pageable = PageRequest.of(page, size,
+                ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+        return PageResult.from(giftCardRepository.findByBuyerId(buyerId, pageable));
     }
 
     @Override
@@ -159,7 +162,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     @Override
     @Transactional(readOnly = true)
     public List<GiftCard> findMySent(String buyerId) {
-        var pageable = PageableUtils.toPageable(0, 100, "createdAt", false);
+        Pageable pageable = PageRequest.of(0, 100, Sort.by("createdAt").descending());
         return giftCardRepository.findByBuyerId(buyerId, pageable).getContent();
     }
 
@@ -168,7 +171,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     public List<GiftCard> findMyReceived(String recipientEmail) {
         if (recipientEmail == null || recipientEmail.isBlank())
             return List.of();
-        var pageable = PageableUtils.toPageable(0, 100, "createdAt", false);
+        Pageable pageable = PageRequest.of(0, 100, Sort.by("createdAt").descending());
         return giftCardRepository.findByRecipientEmail(recipientEmail, pageable).getContent();
     }
 
@@ -235,9 +238,9 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
         final String cardId = card.getId();
         final String cardCode = code;
         final String buyerId = card.getBuyerId();
-        cmsEventProducer.ifPresent(p -> p.publishGiftCardRedeemed(
+        cmsEventPort.publishGiftCardRedeemed(
                 cardId, cardCode, buyerId,
-                amount.toPlainString(), card.getBalance().toPlainString(), orderId));
+                amount.toPlainString(), card.getBalance().toPlainString(), orderId);
 
         return tx;
     }

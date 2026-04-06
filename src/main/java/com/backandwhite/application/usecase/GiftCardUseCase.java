@@ -1,6 +1,6 @@
 package com.backandwhite.application.usecase;
 
-import com.backandwhite.api.dto.PaginationDtoOut;
+import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.domain.model.GiftCard;
 import com.backandwhite.domain.model.GiftCardDesign;
 import com.backandwhite.domain.model.GiftCardTransaction;
@@ -29,10 +29,10 @@ public interface GiftCardUseCase {
 
     GiftCard findByCode(String code);
 
-    PaginationDtoOut<GiftCard> findAll(Map<String, Object> filters, int page, int size, String sortBy,
+    PageResult<GiftCard> findAll(Map<String, Object> filters, int page, int size, String sortBy,
             boolean ascending);
 
-    PaginationDtoOut<GiftCard> findByBuyerId(String buyerId, int page, int size, String sortBy, boolean ascending);
+    PageResult<GiftCard> findByBuyerId(String buyerId, int page, int size, String sortBy, boolean ascending);
 
     BigDecimal getBalance(String code);
 

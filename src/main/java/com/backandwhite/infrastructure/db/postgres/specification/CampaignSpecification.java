@@ -4,6 +4,7 @@ import com.backandwhite.domain.valueobject.CampaignType;
 import com.backandwhite.infrastructure.db.postgres.entity.CampaignEntity;
 import org.springframework.data.jpa.domain.Specification;
 
+import jakarta.persistence.criteria.Predicate;
 import java.util.Map;
 
 public class CampaignSpecification {
@@ -13,7 +14,7 @@ public class CampaignSpecification {
 
     public static Specification<CampaignEntity> withFilters(Map<String, Object> filters) {
         return (root, query, cb) -> {
-            var predicate = cb.conjunction();
+            Predicate predicate = cb.conjunction();
 
             if (filters.containsKey("active")) {
                 predicate = cb.and(predicate,

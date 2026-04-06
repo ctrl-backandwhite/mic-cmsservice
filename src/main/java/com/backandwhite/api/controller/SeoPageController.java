@@ -4,9 +4,10 @@ import com.backandwhite.api.dto.PaginationDtoOut;
 import com.backandwhite.api.dto.in.SeoPageDtoIn;
 import com.backandwhite.api.dto.out.SeoPageDtoOut;
 import com.backandwhite.api.mapper.SeoPageApiMapper;
-import com.backandwhite.api.util.PaginationMapper;
+import com.backandwhite.api.util.PageableUtils;
 import com.backandwhite.application.usecase.SeoPageUseCase;
 import com.backandwhite.domain.model.SeoPage;
+import com.backandwhite.common.domain.model.PageResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -35,8 +36,8 @@ public class SeoPageController {
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "path") String sortBy,
             @RequestParam(defaultValue = "true") boolean ascending) {
-        var result = seoPageUseCase.findAll(page, size, sortBy, ascending);
-        return ResponseEntity.ok(PaginationMapper.map(result, seoPageApiMapper::toDto));
+        PageResult<SeoPage> result = seoPageUseCase.findAll(page, size, sortBy, ascending);
+        return ResponseEntity.ok(PageableUtils.toResponse(result, seoPageApiMapper::toDto));
     }
 
     @GetMapping("/{id}")

@@ -1,21 +1,22 @@
 package com.backandwhite.application.usecase.impl;
 
-import com.backandwhite.api.dto.PaginationDtoOut;
-import com.backandwhite.api.util.PageableUtils;
+import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.application.usecase.LoyaltyUseCase;
 import com.backandwhite.domain.model.LoyaltyRule;
 import com.backandwhite.domain.model.LoyaltyTier;
 import com.backandwhite.domain.model.LoyaltyTransaction;
 import com.backandwhite.domain.repository.LoyaltyRepository;
 import com.backandwhite.domain.valueobject.LoyaltyTransactionType;
-import com.backandwhite.infrastructure.message.kafka.producer.CmsEventProducerService;
+import com.backandwhite.application.port.out.CmsEventPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
 import static com.backandwhite.domain.exception.Message.LOYALTY_INSUFFICIENT_POINTS;
@@ -25,7 +26,7 @@ import static com.backandwhite.domain.exception.Message.LOYALTY_INSUFFICIENT_POI
 public class LoyaltyUseCaseImpl implements LoyaltyUseCase {
 
     private final LoyaltyRepository loyaltyRepository;
-    private final Optional<CmsEventProducerService> cmsEventProducer;
+    private final CmsEventPort cmsEventPort;
 
     // Tiers
 
@@ -123,8 +124,8 @@ public class LoyaltyUseCaseImpl implements LoyaltyUseCase {
                 .createdAt(Instant.now())
                 .build());
         int totalPoints = loyaltyRepository.sumPointsByUserId(userId);
-        cmsEventProducer.ifPresent(p -> p.publishLoyaltyPointsEarned(
-                userId, orderId, points, totalPoints, null));
+        cmsEventPort.publishLoyaltyPointsEarned(
+                userId, orderId, points, totalPoints, null);
         return tx;
     }
 
@@ -144,16 +145,17 @@ public class LoyaltyUseCaseImpl implements LoyaltyUseCase {
                 .createdAt(Instant.now())
                 .build());
         int totalPoints = loyaltyRepository.sumPointsByUserId(userId);
-        cmsEventProducer.ifPresent(p -> p.publishLoyaltyPointsRedeemed(
-                userId, points, totalPoints, null, null));
+        cmsEventPort.publishLoyaltyPointsRedeemed(
+                userId, points, totalPoints, null, null);
         return tx;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PaginationDtoOut<LoyaltyTransaction> getHistory(String userId, int page, int size, String sortBy,
+    public PageResult<LoyaltyTransaction> getHistory(String userId, int page, int size, String sortBy,
             boolean ascending) {
-        var pageable = PageableUtils.toPageable(page, size, sortBy, ascending);
-        return PageableUtils.toResponse(loyaltyRepository.findTransactionsByUserId(userId, pageable));
+        Pageable pageable = PageRequest.of(page, size,
+                ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+        return PageResult.from(loyaltyRepository.findTransactionsByUserId(userId, pageable));
     }
 }

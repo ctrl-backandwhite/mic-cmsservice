@@ -7,6 +7,7 @@ import com.backandwhite.api.dto.out.FlowStepDtoOut;
 import com.backandwhite.api.mapper.FlowApiMapper;
 import com.backandwhite.application.usecase.FlowUseCase;
 import com.backandwhite.domain.model.Flow;
+import com.backandwhite.domain.model.FlowStep;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -71,7 +72,7 @@ public class FlowController {
             @PathVariable String id,
             @Valid @RequestBody List<FlowStepDtoIn> dtos,
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth) {
-        var steps = flowUseCase.syncSteps(id, flowApiMapper.toStepDomainList(dtos));
+        List<FlowStep> steps = flowUseCase.syncSteps(id, flowApiMapper.toStepDomainList(dtos));
         return ResponseEntity.ok(flowApiMapper.toStepDtoList(steps));
     }
 

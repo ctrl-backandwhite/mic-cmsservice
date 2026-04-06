@@ -1,6 +1,6 @@
 package com.backandwhite.application.usecase;
 
-import com.backandwhite.api.dto.PaginationDtoOut;
+import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.domain.model.Campaign;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ public interface CampaignUseCase {
 
     Campaign findById(String id);
 
-    PaginationDtoOut<Campaign> findAll(Map<String, Object> filters, int page, int size, String sortBy,
+    PageResult<Campaign> findAll(Map<String, Object> filters, int page, int size, String sortBy,
             boolean ascending);
 
     List<Campaign> findAllActive();

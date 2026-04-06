@@ -4,6 +4,7 @@ import com.backandwhite.domain.valueobject.EmailTrigger;
 import com.backandwhite.infrastructure.db.postgres.entity.EmailTemplateEntity;
 import org.springframework.data.jpa.domain.Specification;
 
+import jakarta.persistence.criteria.Predicate;
 import java.util.Map;
 
 public class EmailTemplateSpecification {
@@ -13,7 +14,7 @@ public class EmailTemplateSpecification {
 
     public static Specification<EmailTemplateEntity> withFilters(Map<String, Object> filters) {
         return (root, query, cb) -> {
-            var predicate = cb.conjunction();
+            Predicate predicate = cb.conjunction();
 
             if (filters.containsKey("category")) {
                 predicate = cb.and(predicate,

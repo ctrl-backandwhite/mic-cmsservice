@@ -9,19 +9,21 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import com.backandwhite.application.port.out.CmsEventPort;
+
 import java.time.Instant;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
-public class CmsEventProducerService {
+public class KafkaCmsEventAdapter implements CmsEventPort {
 
     private final KafkaTemplate<String, SpecificRecord> kafkaTemplate;
 
     public void publishLoyaltyPointsEarned(String userId, String orderId,
             int pointsEarned, int totalPoints, String tier) {
-        var event = LoyaltyPointsEarnedEvent.newBuilder()
+        LoyaltyPointsEarnedEvent event = LoyaltyPointsEarnedEvent.newBuilder()
                 .setUserId(userId)
                 .setOrderId(orderId)
                 .setPointsEarned(pointsEarned)
@@ -35,7 +37,7 @@ public class CmsEventProducerService {
     public void publishLoyaltyPointsRedeemed(String userId, int pointsRedeemed,
             int totalPoints, String couponCode,
             String discountAmount) {
-        var event = LoyaltyPointsRedeemedEvent.newBuilder()
+        LoyaltyPointsRedeemedEvent event = LoyaltyPointsRedeemedEvent.newBuilder()
                 .setUserId(userId)
                 .setPointsRedeemed(pointsRedeemed)
                 .setTotalPoints(totalPoints)
@@ -49,7 +51,7 @@ public class CmsEventProducerService {
     public void publishGiftCardPurchased(String giftCardId, String code, String buyerId,
             String buyerName, String recipientName, String recipientEmail,
             String amount, String currency, String message, String expiryDate, String designId) {
-        var event = GiftCardPurchasedEvent.newBuilder()
+        GiftCardPurchasedEvent event = GiftCardPurchasedEvent.newBuilder()
                 .setGiftCardId(giftCardId)
                 .setCode(code)
                 .setBuyerId(buyerId)
@@ -68,7 +70,7 @@ public class CmsEventProducerService {
 
     public void publishGiftCardRedeemed(String giftCardId, String code, String userId,
             String amount, String remainingBalance, String orderId) {
-        var event = GiftCardRedeemedEvent.newBuilder()
+        GiftCardRedeemedEvent event = GiftCardRedeemedEvent.newBuilder()
                 .setGiftCardId(giftCardId)
                 .setCode(code)
                 .setUserId(userId)
@@ -81,7 +83,7 @@ public class CmsEventProducerService {
     }
 
     public void publishNewsletterSubscribed(String email, String userId, String source) {
-        var event = NewsletterSubscribedEvent.newBuilder()
+        NewsletterSubscribedEvent event = NewsletterSubscribedEvent.newBuilder()
                 .setEmail(email)
                 .setUserId(userId)
                 .setSource(source != null ? source : "website")
@@ -91,7 +93,7 @@ public class CmsEventProducerService {
     }
 
     public void publishNewsletterUnsubscribed(String email, String userId) {
-        var event = NewsletterUnsubscribedEvent.newBuilder()
+        NewsletterUnsubscribedEvent event = NewsletterUnsubscribedEvent.newBuilder()
                 .setEmail(email)
                 .setUserId(userId)
                 .setTimestamp(now())

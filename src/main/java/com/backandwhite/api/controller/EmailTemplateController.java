@@ -4,9 +4,10 @@ import com.backandwhite.api.dto.PaginationDtoOut;
 import com.backandwhite.api.dto.in.EmailTemplateDtoIn;
 import com.backandwhite.api.dto.out.EmailTemplateDtoOut;
 import com.backandwhite.api.mapper.EmailTemplateApiMapper;
-import com.backandwhite.api.util.PaginationMapper;
+import com.backandwhite.api.util.PageableUtils;
 import com.backandwhite.application.usecase.EmailTemplateUseCase;
 import com.backandwhite.domain.model.EmailTemplate;
+import com.backandwhite.common.domain.model.PageResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -41,11 +42,14 @@ public class EmailTemplateController {
             @RequestParam(defaultValue = "false") boolean ascending,
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth) {
         Map<String, Object> filters = new HashMap<>();
-        if (category != null) filters.put("category", category);
-        if (triggerType != null) filters.put("triggerType", triggerType);
-        if (search != null) filters.put("search", search);
-        var result = emailTemplateUseCase.findAll(filters, page, size, sortBy, ascending);
-        return ResponseEntity.ok(PaginationMapper.map(result, emailTemplateApiMapper::toDto));
+        if (category != null)
+            filters.put("category", category);
+        if (triggerType != null)
+            filters.put("triggerType", triggerType);
+        if (search != null)
+            filters.put("search", search);
+        PageResult<EmailTemplate> result = emailTemplateUseCase.findAll(filters, page, size, sortBy, ascending);
+        return ResponseEntity.ok(PageableUtils.toResponse(result, emailTemplateApiMapper::toDto));
     }
 
     @GetMapping("/{id}")

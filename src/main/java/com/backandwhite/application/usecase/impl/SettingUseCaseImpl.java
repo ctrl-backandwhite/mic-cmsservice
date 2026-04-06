@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
 
@@ -21,7 +22,7 @@ public class SettingUseCaseImpl implements SettingUseCase {
     @Override
     @Transactional
     public Setting save(Setting setting) {
-        var existing = settingRepository.findByKey(setting.getKey());
+        Optional<Setting> existing = settingRepository.findByKey(setting.getKey());
         if (existing.isPresent()) {
             return settingRepository.update(setting);
         }

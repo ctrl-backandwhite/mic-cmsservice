@@ -4,8 +4,10 @@ import com.backandwhite.api.dto.PaginationDtoOut;
 import com.backandwhite.api.dto.in.NewsletterSubscribeDtoIn;
 import com.backandwhite.api.dto.out.NewsletterSubscriberDtoOut;
 import com.backandwhite.api.mapper.NewsletterApiMapper;
-import com.backandwhite.api.util.PaginationMapper;
+import com.backandwhite.api.util.PageableUtils;
 import com.backandwhite.application.usecase.NewsletterUseCase;
+import com.backandwhite.domain.model.NewsletterSubscriber;
+import com.backandwhite.common.domain.model.PageResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +36,7 @@ public class NewsletterController {
     @Operation(summary = "Suscribirse al newsletter (público)")
     public ResponseEntity<NewsletterSubscriberDtoOut> subscribe(@Valid @RequestBody NewsletterSubscribeDtoIn dto,
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth) {
-        var subscriber = newsletterUseCase.subscribe(dto.getEmail(), dto.getSource());
+        NewsletterSubscriber subscriber = newsletterUseCase.subscribe(dto.getEmail(), dto.getSource());
         return ResponseEntity.status(HttpStatus.CREATED).body(newsletterApiMapper.toDto(subscriber));
     }
 
@@ -57,10 +59,12 @@ public class NewsletterController {
             @RequestParam(defaultValue = "false") boolean ascending,
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth) {
         Map<String, Object> filters = new HashMap<>();
-        if (status != null) filters.put("status", status);
-        if (search != null) filters.put("search", search);
-        var result = newsletterUseCase.findAll(filters, page, size, sortBy, ascending);
-        return ResponseEntity.ok(PaginationMapper.map(result, newsletterApiMapper::toDto));
+        if (status != null)
+            filters.put("status", status);
+        if (search != null)
+            filters.put("search", search);
+        PageResult<NewsletterSubscriber> result = newsletterUseCase.findAll(filters, page, size, sortBy, ascending);
+        return ResponseEntity.ok(PageableUtils.toResponse(result, newsletterApiMapper::toDto));
     }
 
     @GetMapping("/{id}")

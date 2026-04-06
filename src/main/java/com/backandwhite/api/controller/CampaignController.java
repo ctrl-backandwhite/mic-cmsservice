@@ -4,9 +4,10 @@ import com.backandwhite.api.dto.PaginationDtoOut;
 import com.backandwhite.api.dto.in.CampaignDtoIn;
 import com.backandwhite.api.dto.out.CampaignDtoOut;
 import com.backandwhite.api.mapper.CampaignApiMapper;
-import com.backandwhite.api.util.PaginationMapper;
+import com.backandwhite.api.util.PageableUtils;
 import com.backandwhite.application.usecase.CampaignUseCase;
 import com.backandwhite.domain.model.Campaign;
+import com.backandwhite.common.domain.model.PageResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -50,11 +51,14 @@ public class CampaignController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "false") boolean ascending) {
         Map<String, Object> filters = new HashMap<>();
-        if (active != null) filters.put("active", active);
-        if (type != null) filters.put("type", type);
-        if (search != null) filters.put("search", search);
-        var result = campaignUseCase.findAll(filters, page, size, sortBy, ascending);
-        return ResponseEntity.ok(PaginationMapper.map(result, campaignApiMapper::toDto));
+        if (active != null)
+            filters.put("active", active);
+        if (type != null)
+            filters.put("type", type);
+        if (search != null)
+            filters.put("search", search);
+        PageResult<Campaign> result = campaignUseCase.findAll(filters, page, size, sortBy, ascending);
+        return ResponseEntity.ok(PageableUtils.toResponse(result, campaignApiMapper::toDto));
     }
 
     @GetMapping("/{id}")

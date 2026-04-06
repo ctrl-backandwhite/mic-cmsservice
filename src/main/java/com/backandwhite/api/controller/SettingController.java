@@ -4,6 +4,7 @@ import com.backandwhite.api.dto.in.SettingDtoIn;
 import com.backandwhite.api.dto.out.SettingDtoOut;
 import com.backandwhite.api.mapper.SettingApiMapper;
 import com.backandwhite.application.usecase.SettingUseCase;
+import com.backandwhite.domain.model.Setting;
 import com.backandwhite.domain.valueobject.SettingSection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,7 +51,7 @@ public class SettingController {
     @Operation(summary = "[Admin] Crear o actualizar configuración")
     public ResponseEntity<SettingDtoOut> save(@RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @Valid @RequestBody SettingDtoIn dto) {
-        var saved = settingUseCase.save(settingApiMapper.toDomain(dto));
+        Setting saved = settingUseCase.save(settingApiMapper.toDomain(dto));
         return ResponseEntity.ok(settingApiMapper.toDto(saved));
     }
 

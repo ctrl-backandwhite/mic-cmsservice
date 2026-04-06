@@ -1,6 +1,6 @@
 package com.backandwhite.application.usecase;
 
-import com.backandwhite.api.dto.PaginationDtoOut;
+import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.domain.model.LoyaltyRule;
 import com.backandwhite.domain.model.LoyaltyTier;
 import com.backandwhite.domain.model.LoyaltyTransaction;
@@ -36,6 +36,6 @@ public interface LoyaltyUseCase {
 
     LoyaltyTransaction redeemPoints(String userId, int points, String description, String orderId);
 
-    PaginationDtoOut<LoyaltyTransaction> getHistory(String userId, int page, int size, String sortBy,
+    PageResult<LoyaltyTransaction> getHistory(String userId, int page, int size, String sortBy,
             boolean ascending);
 }

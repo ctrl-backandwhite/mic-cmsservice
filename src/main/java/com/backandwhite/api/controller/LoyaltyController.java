@@ -9,12 +9,16 @@ import com.backandwhite.api.dto.out.LoyaltyRuleDtoOut;
 import com.backandwhite.api.dto.out.LoyaltyTierDtoOut;
 import com.backandwhite.api.dto.out.LoyaltyTransactionDtoOut;
 import com.backandwhite.api.mapper.LoyaltyApiMapper;
-import com.backandwhite.api.util.PaginationMapper;
+import com.backandwhite.api.util.PageableUtils;
 import com.backandwhite.application.usecase.LoyaltyUseCase;
 import com.backandwhite.common.constants.AppConstants;
 import com.backandwhite.common.security.annotation.NxAdmin;
 import com.backandwhite.common.security.annotation.NxPublic;
 import com.backandwhite.common.security.annotation.NxUser;
+import com.backandwhite.domain.model.LoyaltyRule;
+import com.backandwhite.domain.model.LoyaltyTier;
+import com.backandwhite.domain.model.LoyaltyTransaction;
+import com.backandwhite.common.domain.model.PageResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -56,7 +60,7 @@ public class LoyaltyController {
     public ResponseEntity<LoyaltyTierDtoOut> createTier(
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @Valid @RequestBody LoyaltyTierDtoIn dto) {
-        var created = loyaltyUseCase.createTier(loyaltyApiMapper.toTierDomain(dto));
+        LoyaltyTier created = loyaltyUseCase.createTier(loyaltyApiMapper.toTierDomain(dto));
         return ResponseEntity.status(HttpStatus.CREATED).body(loyaltyApiMapper.toTierDto(created));
     }
 
@@ -66,7 +70,7 @@ public class LoyaltyController {
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @PathVariable String id,
             @Valid @RequestBody LoyaltyTierDtoIn dto) {
-        var updated = loyaltyUseCase.updateTier(id, loyaltyApiMapper.toTierDomain(dto));
+        LoyaltyTier updated = loyaltyUseCase.updateTier(id, loyaltyApiMapper.toTierDomain(dto));
         return ResponseEntity.ok(loyaltyApiMapper.toTierDto(updated));
     }
 
@@ -101,7 +105,7 @@ public class LoyaltyController {
     public ResponseEntity<LoyaltyRuleDtoOut> createRule(
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @Valid @RequestBody LoyaltyRuleDtoIn dto) {
-        var created = loyaltyUseCase.createRule(loyaltyApiMapper.toRuleDomain(dto));
+        LoyaltyRule created = loyaltyUseCase.createRule(loyaltyApiMapper.toRuleDomain(dto));
         return ResponseEntity.status(HttpStatus.CREATED).body(loyaltyApiMapper.toRuleDto(created));
     }
 
@@ -111,7 +115,7 @@ public class LoyaltyController {
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @PathVariable String id,
             @Valid @RequestBody LoyaltyRuleDtoIn dto) {
-        var updated = loyaltyUseCase.updateRule(id, loyaltyApiMapper.toRuleDomain(dto));
+        LoyaltyRule updated = loyaltyUseCase.updateRule(id, loyaltyApiMapper.toRuleDomain(dto));
         return ResponseEntity.ok(loyaltyApiMapper.toRuleDto(updated));
     }
 
@@ -141,7 +145,8 @@ public class LoyaltyController {
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @RequestHeader(value = "X-Auth-Subject") String userId,
             @Valid @RequestBody LoyaltyEarnDtoIn dto) {
-        var transaction = loyaltyUseCase.earnPoints(userId, dto.getPoints(), dto.getDescription(), dto.getOrderId());
+        LoyaltyTransaction transaction = loyaltyUseCase.earnPoints(userId, dto.getPoints(), dto.getDescription(),
+                dto.getOrderId());
         return ResponseEntity.status(HttpStatus.CREATED).body(loyaltyApiMapper.toTransactionDto(transaction));
     }
 
@@ -151,7 +156,8 @@ public class LoyaltyController {
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @RequestHeader(value = "X-Auth-Subject") String userId,
             @Valid @RequestBody LoyaltyEarnDtoIn dto) {
-        var transaction = loyaltyUseCase.redeemPoints(userId, dto.getPoints(), dto.getDescription(), dto.getOrderId());
+        LoyaltyTransaction transaction = loyaltyUseCase.redeemPoints(userId, dto.getPoints(), dto.getDescription(),
+                dto.getOrderId());
         return ResponseEntity.status(HttpStatus.CREATED).body(loyaltyApiMapper.toTransactionDto(transaction));
     }
 
@@ -159,7 +165,7 @@ public class LoyaltyController {
     @Operation(summary = "Obtener tasa de canjeo (puntos por dólar)")
     public ResponseEntity<java.util.Map<String, Object>> getRedemptionRate(
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth) {
-        var rules = loyaltyUseCase.findAllRules();
+        List<LoyaltyRule> rules = loyaltyUseCase.findAllRules();
         int pointsPerDollar = rules.stream()
                 .filter(r -> r.getAction() == com.backandwhite.domain.valueobject.LoyaltyAction.REDEMPTION
                         && r.isActive())
@@ -178,7 +184,7 @@ public class LoyaltyController {
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "false") boolean ascending) {
-        var result = loyaltyUseCase.getHistory(userId, page, size, sortBy, ascending);
-        return ResponseEntity.ok(PaginationMapper.map(result, loyaltyApiMapper::toTransactionDto));
+        PageResult<LoyaltyTransaction> result = loyaltyUseCase.getHistory(userId, page, size, sortBy, ascending);
+        return ResponseEntity.ok(PageableUtils.toResponse(result, loyaltyApiMapper::toTransactionDto));
     }
 }

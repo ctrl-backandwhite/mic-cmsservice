@@ -8,9 +8,12 @@ import com.backandwhite.api.dto.out.GiftCardDesignDtoOut;
 import com.backandwhite.api.dto.out.GiftCardDtoOut;
 import com.backandwhite.api.dto.out.GiftCardTransactionDtoOut;
 import com.backandwhite.api.mapper.GiftCardApiMapper;
-import com.backandwhite.api.util.PaginationMapper;
+import com.backandwhite.api.util.PageableUtils;
 import com.backandwhite.application.usecase.GiftCardUseCase;
 import com.backandwhite.domain.model.GiftCard;
+import com.backandwhite.domain.model.GiftCardDesign;
+import com.backandwhite.domain.model.GiftCardTransaction;
+import com.backandwhite.common.domain.model.PageResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,7 +68,7 @@ public class GiftCardController {
     @Operation(summary = "[Admin] Crear diseño")
     public ResponseEntity<GiftCardDesignDtoOut> createDesign(
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth, @Valid @RequestBody GiftCardDesignDtoIn dto) {
-        var created = giftCardUseCase.createDesign(giftCardApiMapper.toDesignDomain(dto));
+        GiftCardDesign created = giftCardUseCase.createDesign(giftCardApiMapper.toDesignDomain(dto));
         return ResponseEntity.status(HttpStatus.CREATED).body(giftCardApiMapper.toDesignDto(created));
     }
 
@@ -74,7 +77,7 @@ public class GiftCardController {
     public ResponseEntity<GiftCardDesignDtoOut> updateDesign(
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth, @PathVariable String id,
             @Valid @RequestBody GiftCardDesignDtoIn dto) {
-        var updated = giftCardUseCase.updateDesign(id, giftCardApiMapper.toDesignDomain(dto));
+        GiftCardDesign updated = giftCardUseCase.updateDesign(id, giftCardApiMapper.toDesignDomain(dto));
         return ResponseEntity.ok(giftCardApiMapper.toDesignDto(updated));
     }
 
@@ -96,7 +99,7 @@ public class GiftCardController {
             @Valid @RequestBody GiftCardPurchaseDtoIn dto) {
         GiftCard card = giftCardApiMapper.toPurchaseDomain(dto);
         card.setBuyerId(userId);
-        var created = giftCardUseCase.purchase(card);
+        GiftCard created = giftCardUseCase.purchase(card);
         return ResponseEntity.status(HttpStatus.CREATED).body(giftCardApiMapper.toDto(created));
     }
 
@@ -113,7 +116,7 @@ public class GiftCardController {
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @RequestHeader(value = AppConstants.HEADER_AUTH_EMAIL, required = false) String email,
             @PathVariable String code) {
-        var card = giftCardUseCase.claimByCode(code, email);
+        GiftCard card = giftCardUseCase.claimByCode(code, email);
         return ResponseEntity.ok(giftCardApiMapper.toDto(card));
     }
 
@@ -128,7 +131,7 @@ public class GiftCardController {
     @Operation(summary = "Canjear gift card")
     public ResponseEntity<GiftCardTransactionDtoOut> redeem(
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth, @Valid @RequestBody GiftCardRedeemDtoIn dto) {
-        var transaction = giftCardUseCase.redeem(dto.getCode(), dto.getAmount(), dto.getOrderId());
+        GiftCardTransaction transaction = giftCardUseCase.redeem(dto.getCode(), dto.getAmount(), dto.getOrderId());
         return ResponseEntity.ok(giftCardApiMapper.toTransactionDto(transaction));
     }
 
@@ -137,7 +140,7 @@ public class GiftCardController {
     public ResponseEntity<List<GiftCardDtoOut>> getMySent(
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @RequestHeader(value = AppConstants.HEADER_AUTH_SUBJECT, required = false) String userId) {
-        var cards = giftCardUseCase.findMySent(userId);
+        List<GiftCard> cards = giftCardUseCase.findMySent(userId);
         return ResponseEntity.ok(cards.stream().map(giftCardApiMapper::toDto).toList());
     }
 
@@ -146,7 +149,7 @@ public class GiftCardController {
     public ResponseEntity<List<GiftCardDtoOut>> getMyReceived(
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @RequestHeader(value = AppConstants.HEADER_AUTH_EMAIL, required = false) String email) {
-        var cards = giftCardUseCase.findMyReceived(email);
+        List<GiftCard> cards = giftCardUseCase.findMyReceived(email);
         return ResponseEntity.ok(cards.stream().map(giftCardApiMapper::toDto).toList());
     }
 
@@ -161,10 +164,12 @@ public class GiftCardController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "false") boolean ascending) {
         Map<String, Object> filters = new HashMap<>();
-        if (status != null) filters.put("status", status);
-        if (search != null) filters.put("search", search);
-        var result = giftCardUseCase.findAll(filters, page, size, sortBy, ascending);
-        return ResponseEntity.ok(PaginationMapper.map(result, giftCardApiMapper::toDto));
+        if (status != null)
+            filters.put("status", status);
+        if (search != null)
+            filters.put("search", search);
+        PageResult<GiftCard> result = giftCardUseCase.findAll(filters, page, size, sortBy, ascending);
+        return ResponseEntity.ok(PageableUtils.toResponse(result, giftCardApiMapper::toDto));
     }
 
     @GetMapping("/{id}")
@@ -190,7 +195,7 @@ public class GiftCardController {
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "false") boolean ascending) {
-        var result = giftCardUseCase.findByBuyerId(buyerId, page, size, sortBy, ascending);
-        return ResponseEntity.ok(PaginationMapper.map(result, giftCardApiMapper::toDto));
+        PageResult<GiftCard> result = giftCardUseCase.findByBuyerId(buyerId, page, size, sortBy, ascending);
+        return ResponseEntity.ok(PageableUtils.toResponse(result, giftCardApiMapper::toDto));
     }
 }

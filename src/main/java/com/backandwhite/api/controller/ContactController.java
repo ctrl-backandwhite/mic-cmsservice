@@ -4,8 +4,10 @@ import com.backandwhite.api.dto.PaginationDtoOut;
 import com.backandwhite.api.dto.in.ContactMessageDtoIn;
 import com.backandwhite.api.dto.out.ContactMessageDtoOut;
 import com.backandwhite.api.mapper.ContactApiMapper;
-import com.backandwhite.api.util.PaginationMapper;
+import com.backandwhite.api.util.PageableUtils;
 import com.backandwhite.application.usecase.ContactUseCase;
+import com.backandwhite.domain.model.ContactMessage;
+import com.backandwhite.common.domain.model.PageResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -30,7 +32,7 @@ public class ContactController {
     @Operation(summary = "Enviar mensaje de contacto (público)")
     public ResponseEntity<ContactMessageDtoOut> submit(@Valid @RequestBody ContactMessageDtoIn dto,
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth) {
-        var message = contactUseCase.submit(contactApiMapper.toDomain(dto));
+        ContactMessage message = contactUseCase.submit(contactApiMapper.toDomain(dto));
         return ResponseEntity.status(HttpStatus.CREATED).body(contactApiMapper.toDto(message));
     }
 
@@ -42,8 +44,8 @@ public class ContactController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "false") boolean ascending,
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth) {
-        var result = contactUseCase.findAll(page, size, sortBy, ascending);
-        return ResponseEntity.ok(PaginationMapper.map(result, contactApiMapper::toDto));
+        PageResult<ContactMessage> result = contactUseCase.findAll(page, size, sortBy, ascending);
+        return ResponseEntity.ok(PageableUtils.toResponse(result, contactApiMapper::toDto));
     }
 
     @GetMapping("/{id}")

@@ -4,6 +4,7 @@ import com.backandwhite.domain.valueobject.GiftCardStatus;
 import com.backandwhite.infrastructure.db.postgres.entity.GiftCardEntity;
 import org.springframework.data.jpa.domain.Specification;
 
+import jakarta.persistence.criteria.Predicate;
 import java.util.Map;
 
 public class GiftCardSpecification {
@@ -13,7 +14,7 @@ public class GiftCardSpecification {
 
     public static Specification<GiftCardEntity> withFilters(Map<String, Object> filters) {
         return (root, query, cb) -> {
-            var predicate = cb.conjunction();
+            Predicate predicate = cb.conjunction();
 
             if (filters.containsKey("status")) {
                 predicate = cb.and(predicate,

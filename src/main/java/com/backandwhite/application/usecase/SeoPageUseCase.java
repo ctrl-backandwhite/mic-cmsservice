@@ -1,6 +1,6 @@
 package com.backandwhite.application.usecase;
 
-import com.backandwhite.api.dto.PaginationDtoOut;
+import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.domain.model.SeoPage;
 
 public interface SeoPageUseCase {
@@ -12,7 +12,7 @@ public interface SeoPageUseCase {
 
     SeoPage findByPath(String path);
 
-    PaginationDtoOut<SeoPage> findAll(int page, int size, String sortBy, boolean ascending);
+    PageResult<SeoPage> findAll(int page, int size, String sortBy, boolean ascending);
 
     void delete(String id);
 }
