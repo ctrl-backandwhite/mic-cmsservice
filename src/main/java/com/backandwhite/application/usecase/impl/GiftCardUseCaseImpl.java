@@ -109,7 +109,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
                 saved.getRecipientName(),
                 saved.getRecipientEmail(),
                 saved.getOriginalAmount().toPlainString(),
-                "EUR",
+                "USD",
                 saved.getMessage(),
                 saved.getExpiryDate() != null ? saved.getExpiryDate().toString() : null,
                 saved.getDesignId());
