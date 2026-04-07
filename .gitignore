@@ -7,3 +7,7 @@ target/
 mvnw
 mvnw.cmd
 *.log
+
+### Docker (local only) ###
+docker-compose.yml
+Dockerfile
