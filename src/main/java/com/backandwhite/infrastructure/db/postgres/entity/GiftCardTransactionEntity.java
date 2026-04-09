@@ -1,12 +1,12 @@
 package com.backandwhite.infrastructure.db.postgres.entity;
 
+import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.common.infrastructure.entity.AuditableEntity;
+import com.backandwhite.common.domain.valueobject.MoneyConverter;
 import com.backandwhite.domain.valueobject.GiftCardTransactionType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.math.BigDecimal;
 
 @With
 @Getter
@@ -29,8 +29,9 @@ public class GiftCardTransactionEntity extends AuditableEntity {
     @Column(length = 20)
     private GiftCardTransactionType type;
 
+    @Convert(converter = MoneyConverter.class)
     @Column(precision = 12, scale = 2)
-    private BigDecimal amount;
+    private Money amount;
 
     @Column(name = "order_id", length = 64)
     private String orderId;

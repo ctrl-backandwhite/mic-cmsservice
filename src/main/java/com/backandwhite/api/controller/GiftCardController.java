@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.common.constants.AppConstants;
 import com.backandwhite.common.security.annotation.NxAdmin;
 import com.backandwhite.common.security.annotation.NxPublic;
@@ -124,14 +125,15 @@ public class GiftCardController {
     @Operation(summary = "Consultar balance de gift card")
     public ResponseEntity<BigDecimal> getBalance(@RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @PathVariable String code) {
-        return ResponseEntity.ok(giftCardUseCase.getBalance(code));
+        return ResponseEntity.ok(giftCardUseCase.getBalance(code).getAmount());
     }
 
     @PostMapping("/redeem")
     @Operation(summary = "Canjear gift card")
     public ResponseEntity<GiftCardTransactionDtoOut> redeem(
             @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth, @Valid @RequestBody GiftCardRedeemDtoIn dto) {
-        GiftCardTransaction transaction = giftCardUseCase.redeem(dto.getCode(), dto.getAmount(), dto.getOrderId());
+        GiftCardTransaction transaction = giftCardUseCase.redeem(dto.getCode(), Money.of(dto.getAmount()),
+                dto.getOrderId());
         return ResponseEntity.ok(giftCardApiMapper.toTransactionDto(transaction));
     }
 

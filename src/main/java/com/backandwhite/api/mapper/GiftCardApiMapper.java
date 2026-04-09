@@ -5,11 +5,13 @@ import com.backandwhite.api.dto.in.GiftCardPurchaseDtoIn;
 import com.backandwhite.api.dto.out.GiftCardDesignDtoOut;
 import com.backandwhite.api.dto.out.GiftCardDtoOut;
 import com.backandwhite.api.dto.out.GiftCardTransactionDtoOut;
+import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.domain.model.GiftCard;
 import com.backandwhite.domain.model.GiftCardDesign;
 import com.backandwhite.domain.model.GiftCardTransaction;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -41,4 +43,12 @@ public interface GiftCardApiMapper {
     GiftCardTransactionDtoOut toTransactionDto(GiftCardTransaction transaction);
 
     List<GiftCardTransactionDtoOut> toTransactionDtoList(List<GiftCardTransaction> transactions);
+
+    default BigDecimal moneyToBigDecimal(Money money) {
+        return money != null ? money.getAmount() : null;
+    }
+
+    default Money bigDecimalToMoney(BigDecimal value) {
+        return value != null ? Money.of(value) : null;
+    }
 }

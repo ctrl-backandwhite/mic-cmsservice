@@ -1,5 +1,6 @@
 package com.backandwhite.infrastructure.db.postgres.repository;
 
+import com.backandwhite.domain.valueobject.LoyaltyTransactionType;
 import com.backandwhite.infrastructure.db.postgres.entity.LoyaltyTransactionEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,4 +14,6 @@ public interface LoyaltyTransactionJpaRepository extends JpaRepository<LoyaltyTr
 
     @Query("SELECT COALESCE(SUM(t.points), 0) FROM LoyaltyTransactionEntity t WHERE t.userId = :userId")
     int sumPointsByUserId(@Param("userId") String userId);
+
+    boolean existsByOrderIdAndType(String orderId, LoyaltyTransactionType type);
 }

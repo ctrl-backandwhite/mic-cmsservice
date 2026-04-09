@@ -1,10 +1,10 @@
 package com.backandwhite.application.usecase;
 
 import com.backandwhite.common.domain.model.PageResult;
+import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.domain.model.GiftCard;
 import com.backandwhite.domain.model.GiftCardDesign;
 import com.backandwhite.domain.model.GiftCardTransaction;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +34,7 @@ public interface GiftCardUseCase {
 
     PageResult<GiftCard> findByBuyerId(String buyerId, int page, int size, String sortBy, boolean ascending);
 
-    BigDecimal getBalance(String code);
+    Money getBalance(String code);
 
     // My Gift Cards
     List<GiftCard> findMySent(String buyerId);
@@ -44,7 +44,7 @@ public interface GiftCardUseCase {
     GiftCard claimByCode(String code, String userEmail);
 
     // Transactions
-    GiftCardTransaction redeem(String code, BigDecimal amount, String orderId);
+    GiftCardTransaction redeem(String code, Money amount, String orderId);
 
     List<GiftCardTransaction> findTransactions(String giftCardId);
 }

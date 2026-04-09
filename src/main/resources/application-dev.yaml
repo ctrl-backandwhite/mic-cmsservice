@@ -25,6 +25,10 @@ server:
     ssl:
         enabled: false
 
+currency-layer:
+    api-url: https://api.currencylayer.com/live
+    access-key: ${CURRENCY_LAYER_KEY}
+
 logging:
     level:
         root: INFO

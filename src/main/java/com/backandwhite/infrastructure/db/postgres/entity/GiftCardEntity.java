@@ -1,12 +1,13 @@
 package com.backandwhite.infrastructure.db.postgres.entity;
 
+import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.common.infrastructure.entity.AuditableEntity;
+import com.backandwhite.common.domain.valueobject.MoneyConverter;
 import com.backandwhite.domain.valueobject.GiftCardStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -30,11 +31,13 @@ public class GiftCardEntity extends AuditableEntity {
     @Column(name = "design_id", length = 64)
     private String designId;
 
+    @Convert(converter = MoneyConverter.class)
     @Column(name = "original_amount", precision = 12, scale = 2)
-    private BigDecimal originalAmount;
+    private Money originalAmount;
 
+    @Convert(converter = MoneyConverter.class)
     @Column(precision = 12, scale = 2)
-    private BigDecimal balance;
+    private Money balance;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)

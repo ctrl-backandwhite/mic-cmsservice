@@ -1,9 +1,9 @@
 package com.backandwhite.domain.model;
 
+import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.domain.valueobject.GiftCardStatus;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -16,8 +16,8 @@ public class GiftCard {
     private String id;
     private String code;
     private String designId;
-    private BigDecimal originalAmount;
-    private BigDecimal balance;
+    private Money originalAmount;
+    private Money balance;
     private GiftCardStatus status;
     private String buyerId;
     private String recipientName;

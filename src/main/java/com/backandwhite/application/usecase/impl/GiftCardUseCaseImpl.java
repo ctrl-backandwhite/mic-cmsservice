@@ -1,6 +1,7 @@
 package com.backandwhite.application.usecase.impl;
 
 import com.backandwhite.common.domain.model.PageResult;
+import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.application.usecase.GiftCardUseCase;
 import com.backandwhite.domain.model.GiftCard;
 import com.backandwhite.domain.model.GiftCardDesign;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -151,7 +151,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
 
     @Override
     @Transactional(readOnly = true)
-    public BigDecimal getBalance(String code) {
+    public Money getBalance(String code) {
         GiftCard card = giftCardRepository.findByCode(code)
                 .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCard", code));
         return card.getBalance();
@@ -210,19 +210,19 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
 
     @Override
     @Transactional
-    public GiftCardTransaction redeem(String code, BigDecimal amount, String orderId) {
+    public GiftCardTransaction redeem(String code, Money amount, String orderId) {
         GiftCard card = giftCardRepository.findByCode(code)
                 .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCard", code));
 
         if (card.getStatus() != GiftCardStatus.ACTIVE) {
             throw GIFT_CARD_INACTIVE.toBusinessException();
         }
-        if (card.getBalance().compareTo(amount) < 0) {
-            throw GIFT_CARD_INSUFFICIENT_BALANCE.toBusinessException(card.getBalance());
+        if (card.getBalance().isLessThan(amount)) {
+            throw GIFT_CARD_INSUFFICIENT_BALANCE.toBusinessException(card.getBalance().toPlainString());
         }
 
         card.setBalance(card.getBalance().subtract(amount));
-        if (card.getBalance().compareTo(BigDecimal.ZERO) == 0) {
+        if (card.getBalance().isZero()) {
             card.setStatus(GiftCardStatus.USED);
         }
         giftCardRepository.update(card);

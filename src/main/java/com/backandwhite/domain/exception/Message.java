@@ -21,7 +21,9 @@ public enum Message {
     TEMPLATE_NAME_EXISTS("CM011", "Email template with name '%s' already exists"),
     SETTING_NOT_FOUND("CM012", "Setting section '%s' not found"),
     SEO_PATH_EXISTS("CM013", "SEO page for path '%s' already exists"),
-    FLOW_NOT_EMPTY("CM014", "Cannot delete flow with active references");
+    FLOW_NOT_EMPTY("CM014", "Cannot delete flow with active references"),
+    CURRENCY_RATE_NOT_FOUND("CM015", "Currency rate for code '%s' not found"),
+    CURRENCY_SYNC_FAILED("CM016", "Currency rate sync failed: %s");
 
     private final String code;
     private final String detail;

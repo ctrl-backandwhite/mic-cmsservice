@@ -27,6 +27,10 @@ spring:
             database: ${SPRING_DATA_REDIS_DATABASE:6}
             timeout: 60000
 
+currency-layer:
+    api-url: https://api.currencylayer.com/live
+    access-key: b716664772a020369b8345a1484dbcc7
+
 logging:
     level:
         root: INFO

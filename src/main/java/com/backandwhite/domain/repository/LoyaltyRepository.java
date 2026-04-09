@@ -41,4 +41,10 @@ public interface LoyaltyRepository {
     Page<LoyaltyTransaction> findTransactionsByUserId(String userId, Pageable pageable);
 
     int sumPointsByUserId(String userId);
+
+    /**
+     * Check if an EARN transaction already exists for the given orderId
+     * (idempotency).
+     */
+    boolean existsEarnTransactionByOrderId(String orderId);
 }

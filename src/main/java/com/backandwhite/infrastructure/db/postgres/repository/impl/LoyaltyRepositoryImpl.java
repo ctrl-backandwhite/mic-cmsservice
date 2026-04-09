@@ -4,6 +4,8 @@ import com.backandwhite.domain.model.LoyaltyRule;
 import com.backandwhite.domain.model.LoyaltyTier;
 import com.backandwhite.domain.model.LoyaltyTransaction;
 import com.backandwhite.domain.repository.LoyaltyRepository;
+import com.backandwhite.domain.valueobject.LoyaltyAction;
+import com.backandwhite.domain.valueobject.LoyaltyTransactionType;
 import com.backandwhite.infrastructure.db.postgres.mapper.LoyaltyInfraMapper;
 import com.backandwhite.infrastructure.db.postgres.repository.LoyaltyRuleJpaRepository;
 import com.backandwhite.infrastructure.db.postgres.repository.LoyaltyTierJpaRepository;
@@ -109,5 +111,10 @@ public class LoyaltyRepositoryImpl implements LoyaltyRepository {
     public int sumPointsByUserId(String userId) {
         Integer sum = transactionJpa.sumPointsByUserId(userId);
         return sum != null ? sum : 0;
+    }
+
+    @Override
+    public boolean existsEarnTransactionByOrderId(String orderId) {
+        return transactionJpa.existsByOrderIdAndType(orderId, LoyaltyTransactionType.EARN);
     }
 }
