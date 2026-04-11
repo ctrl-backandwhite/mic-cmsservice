@@ -23,6 +23,7 @@ public class CampaignDtoIn {
     @NotNull
     private BigDecimal value;
     private String badge;
+    private String badgeColor;
     @NotNull
     private Instant startDate;
     @NotNull
@@ -30,4 +31,12 @@ public class CampaignDtoIn {
     private List<String> appliesToCategories;
     private List<String> appliesToProducts;
     private boolean active;
+    private String description;
+    private BigDecimal minOrder;
+    private BigDecimal maxDiscount;
+    private Integer buyQty;
+    private Integer getQty;
+    private Boolean isFlash;
+    private Boolean showOnHome;
+    private Integer priority;
 }

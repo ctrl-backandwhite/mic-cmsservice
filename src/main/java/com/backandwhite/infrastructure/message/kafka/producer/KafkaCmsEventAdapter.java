@@ -101,6 +101,14 @@ public class KafkaCmsEventAdapter implements CmsEventPort {
         send(AppConstants.KAFKA_TOPIC_CUSTOMER_NEWSLETTER_UNSUBSCRIBED, email, event);
     }
 
+    public void publishCurrencyRatesSynced(int ratesUpdated) {
+        CurrencyRatesSyncedEvent event = CurrencyRatesSyncedEvent.newBuilder()
+                .setRatesUpdated(ratesUpdated)
+                .setTimestamp(now())
+                .build();
+        send(AppConstants.KAFKA_TOPIC_CONFIG_CURRENCY_RATE_UPDATED, "currency-sync", event);
+    }
+
     // ── Common ───────────────────────────────────────────────────────────────
 
     private void send(String topic, String key, SpecificRecord event) {

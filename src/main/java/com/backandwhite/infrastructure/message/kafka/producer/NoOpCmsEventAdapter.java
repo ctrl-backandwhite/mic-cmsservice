@@ -36,4 +36,8 @@ public class NoOpCmsEventAdapter implements CmsEventPort {
     @Override
     public void publishNewsletterUnsubscribed(String email, String userId) {
     }
+
+    @Override
+    public void publishCurrencyRatesSynced(int ratesUpdated) {
+    }
 }

@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -41,6 +42,9 @@ public class CampaignEntity extends AuditableEntity {
     @Column(length = 50)
     private String badge;
 
+    @Column(name = "badge_color", length = 20)
+    private String badgeColor;
+
     @Column(name = "start_date", nullable = false)
     private Instant startDate;
 
@@ -57,4 +61,28 @@ public class CampaignEntity extends AuditableEntity {
 
     @Column
     private Boolean active;
+
+    @Column(length = 500)
+    private String description;
+
+    @Column(name = "min_order", precision = 12, scale = 2)
+    private BigDecimal minOrder;
+
+    @Column(name = "max_discount", precision = 12, scale = 2)
+    private BigDecimal maxDiscount;
+
+    @Column(name = "buy_qty")
+    private Integer buyQty;
+
+    @Column(name = "get_qty")
+    private Integer getQty;
+
+    @Column(name = "is_flash")
+    private Boolean isFlash;
+
+    @Column(name = "show_on_home")
+    private Boolean showOnHome;
+
+    @Column
+    private Integer priority;
 }

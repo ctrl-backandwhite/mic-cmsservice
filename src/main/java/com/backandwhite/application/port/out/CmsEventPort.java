@@ -18,4 +18,6 @@ public interface CmsEventPort {
     void publishNewsletterSubscribed(String email, String userId, String source);
 
     void publishNewsletterUnsubscribed(String email, String userId);
+
+    void publishCurrencyRatesSynced(int ratesUpdated);
 }

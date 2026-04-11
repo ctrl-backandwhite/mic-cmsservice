@@ -25,6 +25,7 @@ public class CurrencyRateUseCaseImpl implements CurrencyRateUseCase {
 
     private final CurrencyRateRepository repository;
     private final CurrencyLayerClient client;
+    private final com.backandwhite.application.port.out.CmsEventPort eventPort;
 
     @Override
     @Transactional(readOnly = true)
@@ -117,6 +118,7 @@ public class CurrencyRateUseCaseImpl implements CurrencyRateUseCase {
 
         repository.saveAll(toSave);
         log.info("::> Synced {} currency rates from CurrencyLayer", toSave.size());
+        eventPort.publishCurrencyRatesSynced(toSave.size());
         return toSave.size();
     }
 
