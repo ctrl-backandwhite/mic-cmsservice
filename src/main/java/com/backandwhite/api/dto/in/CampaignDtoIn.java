@@ -20,7 +20,6 @@ public class CampaignDtoIn {
     private String name;
     @NotNull
     private CampaignType type;
-    @NotNull
     private BigDecimal value;
     private String badge;
     private String badgeColor;

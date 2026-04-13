@@ -29,8 +29,12 @@ spring:
 
 currency-layer:
     api-url: https://api.currencylayer.com/live
-    access-key: b716664772a020369b8345a1484dbcc7
+    access-key: ${CURRENCY_LAYER_KEY}
 
 logging:
     level:
         root: INFO
+
+services:
+    catalog:
+        url: ${CATALOG_BASE_URL:http://localhost:6002}

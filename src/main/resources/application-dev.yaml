@@ -32,3 +32,7 @@ currency-layer:
 logging:
     level:
         root: INFO
+
+services:
+    catalog:
+        url: ${CATALOG_BASE_URL:http://mic-productcategory:8080}

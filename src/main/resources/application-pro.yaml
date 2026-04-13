@@ -19,6 +19,14 @@ spring:
             port: 6379
             timeout: 60000
 
+currency-layer:
+    api-url: https://api.currencylayer.com/live
+    access-key: ${CURRENCY_LAYER_KEY}
+
 logging:
     level:
         root: INFO
+
+services:
+    catalog:
+        url: ${CATALOG_BASE_URL:http://localhost:6002}

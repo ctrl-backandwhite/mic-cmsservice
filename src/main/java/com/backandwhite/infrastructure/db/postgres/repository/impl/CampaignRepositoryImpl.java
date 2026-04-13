@@ -54,6 +54,13 @@ public class CampaignRepositoryImpl implements CampaignRepository {
     }
 
     @Override
+    public List<Campaign> findConflicting(Instant startDate, Instant endDate, String excludeId) {
+        return jpa.findConflicting(startDate, endDate, excludeId).stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public void delete(String id) {
         jpa.deleteById(id);
     }
