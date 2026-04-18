@@ -4,11 +4,10 @@ import com.backandwhite.domain.model.CurrencyRate;
 import com.backandwhite.domain.repository.CurrencyRateRepository;
 import com.backandwhite.infrastructure.db.postgres.mapper.CurrencyRateInfraMapper;
 import com.backandwhite.infrastructure.db.postgres.repository.CurrencyRateJpaRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -19,16 +18,12 @@ public class CurrencyRateRepositoryImpl implements CurrencyRateRepository {
 
     @Override
     public List<CurrencyRate> findAll() {
-        return jpa.findAll().stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpa.findAll().stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public List<CurrencyRate> findByActive(boolean active) {
-        return jpa.findByActive(active).stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpa.findByActive(active).stream().map(mapper::toDomain).toList();
     }
 
     @Override
@@ -43,11 +38,7 @@ public class CurrencyRateRepositoryImpl implements CurrencyRateRepository {
 
     @Override
     public List<CurrencyRate> saveAll(List<CurrencyRate> rates) {
-        var entities = rates.stream()
-                .map(mapper::toEntity)
-                .toList();
-        return jpa.saveAll(entities).stream()
-                .map(mapper::toDomain)
-                .toList();
+        var entities = rates.stream().map(mapper::toEntity).toList();
+        return jpa.saveAll(entities).stream().map(mapper::toDomain).toList();
     }
 }

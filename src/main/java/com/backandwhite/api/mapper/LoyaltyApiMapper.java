@@ -8,9 +8,9 @@ import com.backandwhite.api.dto.out.LoyaltyTransactionDtoOut;
 import com.backandwhite.domain.model.LoyaltyRule;
 import com.backandwhite.domain.model.LoyaltyTier;
 import com.backandwhite.domain.model.LoyaltyTransaction;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface LoyaltyApiMapper {

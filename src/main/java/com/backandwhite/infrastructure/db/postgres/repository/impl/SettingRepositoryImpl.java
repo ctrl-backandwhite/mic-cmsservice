@@ -5,11 +5,10 @@ import com.backandwhite.domain.repository.SettingRepository;
 import com.backandwhite.domain.valueobject.SettingSection;
 import com.backandwhite.infrastructure.db.postgres.mapper.SettingInfraMapper;
 import com.backandwhite.infrastructure.db.postgres.repository.SettingJpaRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -35,16 +34,12 @@ public class SettingRepositoryImpl implements SettingRepository {
 
     @Override
     public List<Setting> findBySection(SettingSection section) {
-        return jpa.findBySection(section).stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpa.findBySection(section).stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public List<Setting> findAll() {
-        return jpa.findAll().stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpa.findAll().stream().map(mapper::toDomain).toList();
     }
 
     @Override

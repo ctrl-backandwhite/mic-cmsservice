@@ -29,8 +29,7 @@ public interface GiftCardUseCase {
 
     GiftCard findByCode(String code);
 
-    PageResult<GiftCard> findAll(Map<String, Object> filters, int page, int size, String sortBy,
-            boolean ascending);
+    PageResult<GiftCard> findAll(Map<String, Object> filters, int page, int size, String sortBy, boolean ascending);
 
     PageResult<GiftCard> findByBuyerId(String buyerId, int page, int size, String sortBy, boolean ascending);
 

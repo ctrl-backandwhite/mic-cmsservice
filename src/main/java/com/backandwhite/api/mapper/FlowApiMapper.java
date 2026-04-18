@@ -6,9 +6,9 @@ import com.backandwhite.api.dto.out.FlowDtoOut;
 import com.backandwhite.api.dto.out.FlowStepDtoOut;
 import com.backandwhite.domain.model.Flow;
 import com.backandwhite.domain.model.FlowStep;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface FlowApiMapper {

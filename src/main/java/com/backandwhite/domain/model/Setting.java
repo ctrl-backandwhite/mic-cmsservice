@@ -1,10 +1,9 @@
 package com.backandwhite.domain.model;
 
 import com.backandwhite.domain.valueobject.SettingSection;
-import lombok.*;
-
 import java.time.Instant;
 import java.util.Map;
+import lombok.*;
 
 @Data
 @With

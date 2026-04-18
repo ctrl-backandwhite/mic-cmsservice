@@ -1,7 +1,9 @@
 package com.backandwhite.application.usecase.impl;
 
-import com.backandwhite.common.domain.model.PageResult;
+import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
+
 import com.backandwhite.application.usecase.SeoPageUseCase;
+import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.domain.model.SeoPage;
 import com.backandwhite.domain.repository.SeoPageRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +28,7 @@ public class SeoPageUseCaseImpl implements SeoPageUseCase {
     @Override
     @Transactional
     public SeoPage update(String id, SeoPage seoPage) {
-        seoPageRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", id));
+        seoPageRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", id));
         seoPage.setId(id);
         return seoPageRepository.update(seoPage);
     }
@@ -37,15 +36,13 @@ public class SeoPageUseCaseImpl implements SeoPageUseCase {
     @Override
     @Transactional(readOnly = true)
     public SeoPage findById(String id) {
-        return seoPageRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", id));
+        return seoPageRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public SeoPage findByPath(String path) {
-        return seoPageRepository.findByPath(path)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", path));
+        return seoPageRepository.findByPath(path).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", path));
     }
 
     @Override
@@ -59,8 +56,7 @@ public class SeoPageUseCaseImpl implements SeoPageUseCase {
     @Override
     @Transactional
     public void delete(String id) {
-        seoPageRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", id));
+        seoPageRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", id));
         seoPageRepository.delete(id);
     }
 }

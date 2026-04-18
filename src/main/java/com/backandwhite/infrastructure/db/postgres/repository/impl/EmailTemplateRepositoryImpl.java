@@ -5,14 +5,13 @@ import com.backandwhite.domain.repository.EmailTemplateRepository;
 import com.backandwhite.infrastructure.db.postgres.mapper.EmailTemplateInfraMapper;
 import com.backandwhite.infrastructure.db.postgres.repository.EmailTemplateJpaRepository;
 import com.backandwhite.infrastructure.db.postgres.specification.EmailTemplateSpecification;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -44,8 +43,7 @@ public class EmailTemplateRepositoryImpl implements EmailTemplateRepository {
 
     @Override
     public Page<EmailTemplate> findAll(Map<String, Object> filters, Pageable pageable) {
-        return jpa.findAll(EmailTemplateSpecification.withFilters(filters), pageable)
-                .map(mapper::toDomain);
+        return jpa.findAll(EmailTemplateSpecification.withFilters(filters), pageable).map(mapper::toDomain);
     }
 
     @Override

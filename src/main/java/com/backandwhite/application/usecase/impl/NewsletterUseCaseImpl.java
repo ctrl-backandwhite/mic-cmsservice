@@ -1,24 +1,23 @@
 package com.backandwhite.application.usecase.impl;
 
-import com.backandwhite.common.domain.model.PageResult;
+import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
+import static com.backandwhite.domain.exception.Message.NEWSLETTER_ALREADY_SUBSCRIBED;
+
+import com.backandwhite.application.port.out.CmsEventPort;
 import com.backandwhite.application.usecase.NewsletterUseCase;
+import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.domain.model.NewsletterSubscriber;
 import com.backandwhite.domain.repository.NewsletterRepository;
 import com.backandwhite.domain.valueobject.NewsletterStatus;
-import com.backandwhite.application.port.out.CmsEventPort;
+import java.time.Instant;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
-import static com.backandwhite.domain.exception.Message.NEWSLETTER_ALREADY_SUBSCRIBED;
 
 @Service
 @RequiredArgsConstructor
@@ -42,12 +41,8 @@ public class NewsletterUseCaseImpl implements NewsletterUseCase {
             subscriber.setUnsubscribedAt(null);
             return newsletterRepository.update(subscriber);
         }
-        NewsletterSubscriber subscriber = NewsletterSubscriber.builder()
-                .email(email)
-                .status(NewsletterStatus.ACTIVE)
-                .subscribedAt(Instant.now())
-                .source(source)
-                .build();
+        NewsletterSubscriber subscriber = NewsletterSubscriber.builder().email(email).status(NewsletterStatus.ACTIVE)
+                .subscribedAt(Instant.now()).source(source).build();
         NewsletterSubscriber saved = newsletterRepository.save(subscriber);
         cmsEventPort.publishNewsletterSubscribed(email, null, source);
         return saved;
@@ -73,8 +68,8 @@ public class NewsletterUseCaseImpl implements NewsletterUseCase {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResult<NewsletterSubscriber> findAll(Map<String, Object> filters, int page, int size,
-            String sortBy, boolean ascending) {
+    public PageResult<NewsletterSubscriber> findAll(Map<String, Object> filters, int page, int size, String sortBy,
+            boolean ascending) {
         Pageable pageable = PageRequest.of(page, size,
                 ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
         return PageResult.from(newsletterRepository.findAll(filters, pageable));

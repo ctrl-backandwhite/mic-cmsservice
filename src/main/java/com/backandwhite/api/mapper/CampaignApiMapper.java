@@ -4,10 +4,10 @@ import com.backandwhite.api.dto.in.CampaignDtoIn;
 import com.backandwhite.api.dto.out.CampaignDtoOut;
 import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.domain.model.Campaign;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import java.math.BigDecimal;
 import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CampaignApiMapper {

@@ -6,12 +6,11 @@ import com.backandwhite.domain.repository.FlowRepository;
 import com.backandwhite.infrastructure.db.postgres.mapper.FlowInfraMapper;
 import com.backandwhite.infrastructure.db.postgres.repository.FlowJpaRepository;
 import com.backandwhite.infrastructure.db.postgres.repository.FlowStepJpaRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -39,9 +38,7 @@ public class FlowRepositoryImpl implements FlowRepository {
 
     @Override
     public List<Flow> findAll() {
-        return flowJpa.findAll().stream()
-                .map(mapper::toDomain)
-                .toList();
+        return flowJpa.findAll().stream().map(mapper::toDomain).toList();
     }
 
     @Override
@@ -59,9 +56,7 @@ public class FlowRepositoryImpl implements FlowRepository {
 
     @Override
     public List<FlowStep> findStepsByFlowId(String flowId) {
-        return stepJpa.findByFlowIdOrderByPositionAsc(flowId).stream()
-                .map(mapper::toStepDomain)
-                .toList();
+        return stepJpa.findByFlowIdOrderByPositionAsc(flowId).stream().map(mapper::toStepDomain).toList();
     }
 
     @Override

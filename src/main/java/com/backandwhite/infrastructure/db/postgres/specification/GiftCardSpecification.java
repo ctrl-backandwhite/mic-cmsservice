@@ -2,10 +2,9 @@ package com.backandwhite.infrastructure.db.postgres.specification;
 
 import com.backandwhite.domain.valueobject.GiftCardStatus;
 import com.backandwhite.infrastructure.db.postgres.entity.GiftCardEntity;
-import org.springframework.data.jpa.domain.Specification;
-
 import jakarta.persistence.criteria.Predicate;
 import java.util.Map;
+import org.springframework.data.jpa.domain.Specification;
 
 public class GiftCardSpecification {
 
@@ -18,8 +17,7 @@ public class GiftCardSpecification {
 
             if (filters.containsKey("status")) {
                 predicate = cb.and(predicate,
-                        cb.equal(root.get("status"),
-                                GiftCardStatus.valueOf(filters.get("status").toString())));
+                        cb.equal(root.get("status"), GiftCardStatus.valueOf(filters.get("status").toString())));
             }
             if (filters.containsKey("search")) {
                 String search = "%" + filters.get("search").toString().toLowerCase() + "%";

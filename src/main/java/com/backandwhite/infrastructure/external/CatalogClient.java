@@ -1,22 +1,21 @@
 package com.backandwhite.infrastructure.external;
 
 import com.backandwhite.application.port.out.CatalogPort;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
 
 /**
- * HTTP client for service-to-service calls to mic-productcategory.
- * Used exclusively during campaign overlap validation.
+ * HTTP client for service-to-service calls to mic-productcategory. Used
+ * exclusively during campaign overlap validation.
  */
 @Log4j2
 @Component
@@ -24,14 +23,13 @@ public class CatalogClient implements CatalogPort {
 
     private final RestClient restClient;
 
-    public CatalogClient(
-            @Value("${services.catalog.url:http://localhost:6002}") String baseUrl) {
+    public CatalogClient(@Value("${services.catalog.url:http://localhost:6002}") String baseUrl) {
         this.restClient = RestClient.builder().baseUrl(baseUrl).build();
     }
 
     /**
-     * {@inheritDoc}
-     * Calls GET /api/v1/products/{id} for each product in the list (in series).
+     * {@inheritDoc} Calls GET /api/v1/products/{id} for each product in the list
+     * (in series).
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -42,10 +40,8 @@ public class CatalogClient implements CatalogPort {
 
         for (String productId : productIds) {
             try {
-                Map<String, Object> product = restClient.get()
-                        .uri("/api/v1/products/{id}", productId)
-                        .header("X-nx036-auth", "service-cms")
-                        .retrieve()
+                Map<String, Object> product = restClient.get().uri("/api/v1/products/{id}", productId)
+                        .header("X-nx036-auth", "service-cms").retrieve()
                         .body(new ParameterizedTypeReference<Map<String, Object>>() {
                         });
                 if (product != null && product.get("categoryId") != null) {
@@ -59,9 +55,8 @@ public class CatalogClient implements CatalogPort {
     }
 
     /**
-     * {@inheritDoc}
-     * Calls GET /api/v1/categories to retrieve the full tree, then expands
-     * descendants.
+     * {@inheritDoc} Calls GET /api/v1/categories to retrieve the full tree, then
+     * expands descendants.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -70,10 +65,8 @@ public class CatalogClient implements CatalogPort {
             return new HashSet<>();
 
         try {
-            List<Map<String, Object>> tree = restClient.get()
-                    .uri("/api/v1/categories?locale=en")
-                    .header("X-nx036-auth", "service-cms")
-                    .retrieve()
+            List<Map<String, Object>> tree = restClient.get().uri("/api/v1/categories?locale=en")
+                    .header("X-nx036-auth", "service-cms").retrieve()
                     .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {
                     });
 

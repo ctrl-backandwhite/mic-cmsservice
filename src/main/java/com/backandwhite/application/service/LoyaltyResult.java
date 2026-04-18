@@ -18,11 +18,6 @@ public class LoyaltyResult {
     private boolean leveledUp;
 
     public static LoyaltyResult empty() {
-        return LoyaltyResult.builder()
-                .earnedPoints(0)
-                .bonusPoints(0)
-                .totalBalance(0)
-                .leveledUp(false)
-                .build();
+        return LoyaltyResult.builder().earnedPoints(0).bonusPoints(0).totalBalance(0).leveledUp(false).build();
     }
 }

@@ -36,6 +36,5 @@ public interface LoyaltyUseCase {
 
     LoyaltyTransaction redeemPoints(String userId, int points, String description, String orderId);
 
-    PageResult<LoyaltyTransaction> getHistory(String userId, int page, int size, String sortBy,
-            boolean ascending);
+    PageResult<LoyaltyTransaction> getHistory(String userId, int page, int size, String sortBy, boolean ascending);
 }

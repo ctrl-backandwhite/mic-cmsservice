@@ -9,24 +9,24 @@ import org.springframework.stereotype.Component;
 public class NoOpCmsEventAdapter implements CmsEventPort {
 
     @Override
-    public void publishLoyaltyPointsEarned(String userId, String orderId,
-            int pointsEarned, int totalPoints, String tier) {
+    public void publishLoyaltyPointsEarned(String userId, String orderId, int pointsEarned, int totalPoints,
+            String tier) {
     }
 
     @Override
-    public void publishLoyaltyPointsRedeemed(String userId, int pointsRedeemed,
-            int totalPoints, String couponCode, String discountAmount) {
+    public void publishLoyaltyPointsRedeemed(String userId, int pointsRedeemed, int totalPoints, String couponCode,
+            String discountAmount) {
     }
 
     @Override
-    public void publishGiftCardPurchased(String giftCardId, String code, String buyerId,
-            String buyerName, String recipientName, String recipientEmail,
-            String amount, String currency, String message, String expiryDate, String designId) {
+    public void publishGiftCardPurchased(String giftCardId, String code, String buyerId, String buyerName,
+            String recipientName, String recipientEmail, String amount, String currency, String message,
+            String expiryDate, String designId) {
     }
 
     @Override
-    public void publishGiftCardRedeemed(String giftCardId, String code, String userId,
-            String amount, String remainingBalance, String orderId) {
+    public void publishGiftCardRedeemed(String giftCardId, String code, String userId, String amount,
+            String remainingBalance, String orderId) {
     }
 
     @Override

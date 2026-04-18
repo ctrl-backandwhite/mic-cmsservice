@@ -5,12 +5,11 @@ import com.backandwhite.domain.repository.SlideRepository;
 import com.backandwhite.infrastructure.db.postgres.entity.SlideEntity;
 import com.backandwhite.infrastructure.db.postgres.mapper.SlideInfraMapper;
 import com.backandwhite.infrastructure.db.postgres.repository.SlideJpaRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -37,16 +36,12 @@ public class SlideRepositoryImpl implements SlideRepository {
 
     @Override
     public List<Slide> findAllActive() {
-        return jpa.findByActiveTrueOrderByPositionAsc().stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpa.findByActiveTrueOrderByPositionAsc().stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public List<Slide> findAll() {
-        return jpa.findAllByOrderByPositionAsc().stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpa.findAllByOrderByPositionAsc().stream().map(mapper::toDomain).toList();
     }
 
     @Override
@@ -56,9 +51,7 @@ public class SlideRepositoryImpl implements SlideRepository {
 
     @Override
     public void updatePositions(List<Slide> slides) {
-        List<SlideEntity> entities = slides.stream()
-                .map(mapper::toEntity)
-                .toList();
+        List<SlideEntity> entities = slides.stream().map(mapper::toEntity).toList();
         jpa.saveAll(entities);
     }
 }

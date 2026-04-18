@@ -9,10 +9,10 @@ import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.domain.model.GiftCard;
 import com.backandwhite.domain.model.GiftCardDesign;
 import com.backandwhite.domain.model.GiftCardTransaction;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import java.math.BigDecimal;
 import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface GiftCardApiMapper {

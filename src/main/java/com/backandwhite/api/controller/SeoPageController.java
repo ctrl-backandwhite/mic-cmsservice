@@ -6,8 +6,11 @@ import com.backandwhite.api.dto.out.SeoPageDtoOut;
 import com.backandwhite.api.mapper.SeoPageApiMapper;
 import com.backandwhite.api.util.PageableUtils;
 import com.backandwhite.application.usecase.SeoPageUseCase;
-import com.backandwhite.domain.model.SeoPage;
+import com.backandwhite.common.constants.AppConstants;
 import com.backandwhite.common.domain.model.PageResult;
+import com.backandwhite.common.security.annotation.NxAdmin;
+import com.backandwhite.common.security.annotation.NxPublic;
+import com.backandwhite.domain.model.SeoPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -15,9 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.backandwhite.common.constants.AppConstants;
-import com.backandwhite.common.security.annotation.NxAdmin;
-import com.backandwhite.common.security.annotation.NxPublic;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,18 +29,18 @@ public class SeoPageController {
     private final SeoPageApiMapper seoPageApiMapper;
 
     @GetMapping
+    @NxAdmin
     @Operation(summary = "[Admin] Listar páginas SEO")
     public ResponseEntity<PaginationDtoOut<SeoPageDtoOut>> findAll(
-            @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "path") String sortBy,
+            @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth, @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size, @RequestParam(defaultValue = "path") String sortBy,
             @RequestParam(defaultValue = "true") boolean ascending) {
         PageResult<SeoPage> result = seoPageUseCase.findAll(page, size, sortBy, ascending);
         return ResponseEntity.ok(PageableUtils.toResponse(result, seoPageApiMapper::toDto));
     }
 
     @GetMapping("/{id}")
+    @NxAdmin
     @Operation(summary = "[Admin] Obtener página SEO por ID")
     public ResponseEntity<SeoPageDtoOut> findById(@RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @PathVariable String id) {
@@ -48,6 +48,7 @@ public class SeoPageController {
     }
 
     @GetMapping("/path")
+    @NxPublic
     @Operation(summary = "Obtener SEO por path (público)")
     public ResponseEntity<SeoPageDtoOut> findByPath(@RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @RequestParam String path) {
@@ -55,6 +56,7 @@ public class SeoPageController {
     }
 
     @PostMapping
+    @NxAdmin
     @Operation(summary = "[Admin] Crear página SEO")
     public ResponseEntity<SeoPageDtoOut> create(@RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @Valid @RequestBody SeoPageDtoIn dto) {
@@ -63,6 +65,7 @@ public class SeoPageController {
     }
 
     @PutMapping("/{id}")
+    @NxAdmin
     @Operation(summary = "[Admin] Actualizar página SEO")
     public ResponseEntity<SeoPageDtoOut> update(@RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @PathVariable String id, @Valid @RequestBody SeoPageDtoIn dto) {
@@ -71,6 +74,7 @@ public class SeoPageController {
     }
 
     @DeleteMapping("/{id}")
+    @NxAdmin
     @Operation(summary = "[Admin] Eliminar página SEO")
     public ResponseEntity<Void> delete(@RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
             @PathVariable String id) {

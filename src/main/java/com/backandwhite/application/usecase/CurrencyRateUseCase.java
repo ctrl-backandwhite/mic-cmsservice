@@ -1,7 +1,6 @@
 package com.backandwhite.application.usecase;
 
 import com.backandwhite.domain.model.CurrencyRate;
-
 import java.math.BigDecimal;
 import java.util.List;
 

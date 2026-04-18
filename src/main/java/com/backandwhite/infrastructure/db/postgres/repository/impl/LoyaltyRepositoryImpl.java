@@ -4,20 +4,18 @@ import com.backandwhite.domain.model.LoyaltyRule;
 import com.backandwhite.domain.model.LoyaltyTier;
 import com.backandwhite.domain.model.LoyaltyTransaction;
 import com.backandwhite.domain.repository.LoyaltyRepository;
-import com.backandwhite.domain.valueobject.LoyaltyAction;
 import com.backandwhite.domain.valueobject.LoyaltyTransactionType;
 import com.backandwhite.infrastructure.db.postgres.mapper.LoyaltyInfraMapper;
 import com.backandwhite.infrastructure.db.postgres.repository.LoyaltyRuleJpaRepository;
 import com.backandwhite.infrastructure.db.postgres.repository.LoyaltyTierJpaRepository;
 import com.backandwhite.infrastructure.db.postgres.repository.LoyaltyTransactionJpaRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -48,9 +46,7 @@ public class LoyaltyRepositoryImpl implements LoyaltyRepository {
 
     @Override
     public List<LoyaltyTier> findAllTiers() {
-        return tierJpa.findAllByOrderByMinPointsAsc().stream()
-                .map(mapper::toTierDomain)
-                .toList();
+        return tierJpa.findAllByOrderByMinPointsAsc().stream().map(mapper::toTierDomain).toList();
     }
 
     @Override
@@ -83,9 +79,7 @@ public class LoyaltyRepositoryImpl implements LoyaltyRepository {
 
     @Override
     public List<LoyaltyRule> findAllRules() {
-        return ruleJpa.findAll().stream()
-                .map(mapper::toRuleDomain)
-                .toList();
+        return ruleJpa.findAll().stream().map(mapper::toRuleDomain).toList();
     }
 
     @Override
@@ -103,8 +97,7 @@ public class LoyaltyRepositoryImpl implements LoyaltyRepository {
 
     @Override
     public Page<LoyaltyTransaction> findTransactionsByUserId(String userId, Pageable pageable) {
-        return transactionJpa.findByUserIdOrderByCreatedAtDesc(userId, pageable)
-                .map(mapper::toTransactionDomain);
+        return transactionJpa.findByUserIdOrderByCreatedAtDesc(userId, pageable).map(mapper::toTransactionDomain);
     }
 
     @Override

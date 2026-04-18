@@ -13,14 +13,8 @@ public final class CurrencyMetadataProvider {
     private CurrencyMetadataProvider() {
     }
 
-    public record CurrencyMeta(
-            String currencyName,
-            String currencySymbol,
-            String countryName,
-            String countryCode,
-            String flagEmoji,
-            String timezone,
-            String language) {
+    public record CurrencyMeta(String currencyName, String currencySymbol, String countryName, String countryCode,
+            String flagEmoji, String timezone, String language) {
     }
 
     private static final Map<String, CurrencyMeta> META = new ConcurrentHashMap<>();
@@ -226,9 +220,8 @@ public final class CurrencyMetadataProvider {
         put("GGP", "Guernsey Pound", "£", "Guernsey", "GG", "🇬🇬", "Europe/Guernsey", "en");
     }
 
-    private static void put(String code, String name, String symbol,
-            String country, String cc, String flag,
-            String tz, String lang) {
+    private static void put(String code, String name, String symbol, String country, String cc, String flag, String tz,
+            String lang) {
         META.put(code, new CurrencyMeta(name, symbol, country, cc, flag, tz, lang));
     }
 
@@ -250,13 +243,7 @@ public final class CurrencyMetadataProvider {
      * Build a default CurrencyMeta for an unknown currency code.
      */
     public static CurrencyMeta defaultMeta(String currencyCode) {
-        return new CurrencyMeta(
-                currencyCode,
-                currencyCode,
-                "Unknown",
-                currencyCode.length() >= 2 ? currencyCode.substring(0, 2) : "XX",
-                "🏳️",
-                "UTC",
-                "en");
+        return new CurrencyMeta(currencyCode, currencyCode, "Unknown",
+                currencyCode.length() >= 2 ? currencyCode.substring(0, 2) : "XX", "🏳️", "UTC", "en");
     }
 }

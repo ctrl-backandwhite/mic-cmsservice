@@ -1,19 +1,18 @@
 package com.backandwhite.application.usecase.impl;
 
-import com.backandwhite.common.domain.model.PageResult;
+import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
+
 import com.backandwhite.application.usecase.EmailTemplateUseCase;
+import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.domain.model.EmailTemplate;
 import com.backandwhite.domain.repository.EmailTemplateRepository;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
-
-import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +29,7 @@ public class EmailTemplateUseCaseImpl implements EmailTemplateUseCase {
     @Override
     @Transactional
     public EmailTemplate update(String id, EmailTemplate template) {
-        emailTemplateRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("EmailTemplate", id));
+        emailTemplateRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("EmailTemplate", id));
         template.setId(id);
         return emailTemplateRepository.update(template);
     }
@@ -62,8 +60,7 @@ public class EmailTemplateUseCaseImpl implements EmailTemplateUseCase {
     @Override
     @Transactional
     public void delete(String id) {
-        emailTemplateRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("EmailTemplate", id));
+        emailTemplateRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("EmailTemplate", id));
         emailTemplateRepository.delete(id);
     }
 }

@@ -1,17 +1,16 @@
 package com.backandwhite.application.usecase.impl;
 
+import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
+
 import com.backandwhite.application.usecase.FlowUseCase;
 import com.backandwhite.domain.model.Flow;
 import com.backandwhite.domain.model.FlowStep;
 import com.backandwhite.domain.repository.FlowRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +27,7 @@ public class FlowUseCaseImpl implements FlowUseCase {
     @Override
     @Transactional
     public Flow update(String id, Flow flow) {
-        flowRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Flow", id));
+        flowRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Flow", id));
         flow.setId(id);
         return flowRepository.update(flow);
     }
@@ -37,8 +35,7 @@ public class FlowUseCaseImpl implements FlowUseCase {
     @Override
     @Transactional(readOnly = true)
     public Flow findById(String id) {
-        Flow flow = flowRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Flow", id));
+        Flow flow = flowRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Flow", id));
         flow.setSteps(flowRepository.findStepsByFlowId(id));
         return flow;
     }
@@ -52,8 +49,7 @@ public class FlowUseCaseImpl implements FlowUseCase {
     @Override
     @Transactional
     public void delete(String id) {
-        flowRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Flow", id));
+        flowRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Flow", id));
         flowRepository.deleteStepsByFlowId(id);
         flowRepository.delete(id);
     }
@@ -61,8 +57,7 @@ public class FlowUseCaseImpl implements FlowUseCase {
     @Override
     @Transactional
     public List<FlowStep> syncSteps(String flowId, List<FlowStep> steps) {
-        flowRepository.findById(flowId)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Flow", flowId));
+        flowRepository.findById(flowId).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Flow", flowId));
         flowRepository.deleteStepsByFlowId(flowId);
         List<FlowStep> saved = new ArrayList<>();
         for (int i = 0; i < steps.size(); i++) {

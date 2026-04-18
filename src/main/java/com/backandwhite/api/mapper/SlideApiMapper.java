@@ -3,9 +3,9 @@ package com.backandwhite.api.mapper;
 import com.backandwhite.api.dto.in.SlideDtoIn;
 import com.backandwhite.api.dto.out.SlideDtoOut;
 import com.backandwhite.domain.model.Slide;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface SlideApiMapper {

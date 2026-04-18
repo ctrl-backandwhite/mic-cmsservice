@@ -3,18 +3,17 @@ package com.backandwhite.application.job;
 import com.backandwhite.domain.model.GiftCard;
 import com.backandwhite.domain.repository.GiftCardRepository;
 import com.backandwhite.domain.valueobject.GiftCardStatus;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.List;
-
 /**
- * Daily job that transitions PENDING/ACTIVE gift cards whose expiryDate
- * has passed to EXPIRED status. Runs every day at 02:00.
+ * Daily job that transitions PENDING/ACTIVE gift cards whose expiryDate has
+ * passed to EXPIRED status. Runs every day at 02:00.
  */
 @Log4j2
 @Component

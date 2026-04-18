@@ -1,5 +1,7 @@
 package com.backandwhite.contract;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
@@ -10,14 +12,11 @@ import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.backandwhite.infrastructure.external.CatalogClient;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(PactConsumerTestExt.class)
 @PactTestFor(providerName = "catalog-service", pactVersion = PactSpecVersion.V3)
@@ -28,39 +27,25 @@ class CatalogClientPactTest {
 
     @Pact(consumer = "CatalogConsumer", provider = "catalog-service")
     RequestResponsePact getProductById(PactDslWithProvider builder) {
-        return builder
-                .given("product prod-001 exists with category cat-electronics-001")
-                .uponReceiving("a request to get product by id")
-                .path("/api/v1/products/" + PRODUCT_ID)
-                .method("GET")
-                .headers("X-nx036-auth", "service-cms")
-                .willRespondWith()
-                .status(200)
+        return builder.given("product prod-001 exists with category cat-electronics-001")
+                .uponReceiving("a request to get product by id").path("/api/v1/products/" + PRODUCT_ID).method("GET")
+                .headers("X-nx036-auth", "service-cms").willRespondWith().status(200)
                 .headers(Map.of("Content-Type", "application/json"))
-                .body(new PactDslJsonBody()
-                        .stringType("id", PRODUCT_ID)
-                        .stringType("categoryId", CATEGORY_ID))
+                .body(new PactDslJsonBody().stringType("id", PRODUCT_ID).stringType("categoryId", CATEGORY_ID))
                 .toPact();
     }
 
     @Pact(consumer = "CatalogConsumer", provider = "catalog-service")
     RequestResponsePact getCategoryTree(PactDslWithProvider builder) {
-        return builder
-                .given("category tree exists with electronics category")
-                .uponReceiving("a request to get category tree in English")
-                .path("/api/v1/categories")
-                .query("locale=en")
-                .method("GET")
-                .headers("X-nx036-auth", "service-cms")
-                .willRespondWith()
-                .status(200)
+        return builder.given("category tree exists with electronics category")
+                .uponReceiving("a request to get category tree in English").path("/api/v1/categories")
+                .query("locale=en").method("GET").headers("X-nx036-auth", "service-cms").willRespondWith().status(200)
                 .headers(Map.of("Content-Type", "application/json"))
                 .body(LambdaDsl.newJsonArray(array -> array.object(obj -> {
                     obj.stringType("id", CATEGORY_ID);
                     obj.array("subCategories", subs -> {
                     });
-                })).build())
-                .toPact();
+                })).build()).toPact();
     }
 
     @Test

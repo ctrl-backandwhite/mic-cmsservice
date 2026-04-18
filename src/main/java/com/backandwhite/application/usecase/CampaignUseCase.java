@@ -12,8 +12,7 @@ public interface CampaignUseCase {
 
     Campaign findById(String id);
 
-    PageResult<Campaign> findAll(Map<String, Object> filters, int page, int size, String sortBy,
-            boolean ascending);
+    PageResult<Campaign> findAll(Map<String, Object> filters, int page, int size, String sortBy, boolean ascending);
 
     List<Campaign> findAllActive();
 

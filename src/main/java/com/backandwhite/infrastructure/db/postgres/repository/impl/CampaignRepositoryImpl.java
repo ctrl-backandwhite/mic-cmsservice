@@ -5,16 +5,15 @@ import com.backandwhite.domain.repository.CampaignRepository;
 import com.backandwhite.infrastructure.db.postgres.mapper.CampaignInfraMapper;
 import com.backandwhite.infrastructure.db.postgres.repository.CampaignJpaRepository;
 import com.backandwhite.infrastructure.db.postgres.specification.CampaignSpecification;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -41,23 +40,18 @@ public class CampaignRepositoryImpl implements CampaignRepository {
 
     @Override
     public Page<Campaign> findAll(Map<String, Object> filters, Pageable pageable) {
-        return jpa.findAll(CampaignSpecification.withFilters(filters), pageable)
-                .map(mapper::toDomain);
+        return jpa.findAll(CampaignSpecification.withFilters(filters), pageable).map(mapper::toDomain);
     }
 
     @Override
     public List<Campaign> findAllActive() {
         Instant now = Instant.now();
-        return jpa.findByActiveTrueAndStartDateBeforeAndEndDateAfter(now, now).stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpa.findByActiveTrueAndStartDateBeforeAndEndDateAfter(now, now).stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public List<Campaign> findConflicting(Instant startDate, Instant endDate, String excludeId) {
-        return jpa.findConflicting(startDate, endDate, excludeId).stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpa.findConflicting(startDate, endDate, excludeId).stream().map(mapper::toDomain).toList();
     }
 
     @Override

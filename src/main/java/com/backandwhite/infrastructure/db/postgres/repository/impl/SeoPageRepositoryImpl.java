@@ -4,13 +4,12 @@ import com.backandwhite.domain.model.SeoPage;
 import com.backandwhite.domain.repository.SeoPageRepository;
 import com.backandwhite.infrastructure.db.postgres.mapper.SeoPageInfraMapper;
 import com.backandwhite.infrastructure.db.postgres.repository.SeoPageJpaRepository;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor

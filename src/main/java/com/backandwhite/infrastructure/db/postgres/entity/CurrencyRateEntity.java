@@ -2,11 +2,10 @@ package com.backandwhite.infrastructure.db.postgres.entity;
 
 import com.backandwhite.common.infrastructure.entity.AuditableEntity;
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
-
 import java.math.BigDecimal;
 import java.time.Instant;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @With
 @Getter

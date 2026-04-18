@@ -1,17 +1,16 @@
 package com.backandwhite.application.usecase.impl;
 
+import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
+
 import com.backandwhite.application.usecase.SettingUseCase;
 import com.backandwhite.domain.model.Setting;
 import com.backandwhite.domain.repository.SettingRepository;
 import com.backandwhite.domain.valueobject.SettingSection;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
-import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +31,7 @@ public class SettingUseCaseImpl implements SettingUseCase {
     @Override
     @Transactional(readOnly = true)
     public Setting findByKey(String key) {
-        return settingRepository.findByKey(key)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Setting", key));
+        return settingRepository.findByKey(key).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Setting", key));
     }
 
     @Override
@@ -51,8 +49,7 @@ public class SettingUseCaseImpl implements SettingUseCase {
     @Override
     @Transactional
     public void delete(String key) {
-        settingRepository.findByKey(key)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Setting", key));
+        settingRepository.findByKey(key).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Setting", key));
         settingRepository.delete(key);
     }
 }

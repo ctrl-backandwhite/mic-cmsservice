@@ -2,10 +2,9 @@ package com.backandwhite.domain.model;
 
 import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.domain.valueobject.GiftCardStatus;
-import lombok.*;
-
 import java.time.Instant;
 import java.time.LocalDate;
+import lombok.*;
 
 @Data
 @With

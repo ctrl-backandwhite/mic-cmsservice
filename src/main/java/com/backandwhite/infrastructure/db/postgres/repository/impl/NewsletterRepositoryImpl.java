@@ -5,14 +5,13 @@ import com.backandwhite.domain.repository.NewsletterRepository;
 import com.backandwhite.infrastructure.db.postgres.mapper.NewsletterInfraMapper;
 import com.backandwhite.infrastructure.db.postgres.repository.NewsletterSubscriberJpaRepository;
 import com.backandwhite.infrastructure.db.postgres.specification.NewsletterSpecification;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -44,8 +43,7 @@ public class NewsletterRepositoryImpl implements NewsletterRepository {
 
     @Override
     public Page<NewsletterSubscriber> findAll(Map<String, Object> filters, Pageable pageable) {
-        return jpa.findAll(NewsletterSpecification.withFilters(filters), pageable)
-                .map(mapper::toDomain);
+        return jpa.findAll(NewsletterSpecification.withFilters(filters), pageable).map(mapper::toDomain);
     }
 
     @Override

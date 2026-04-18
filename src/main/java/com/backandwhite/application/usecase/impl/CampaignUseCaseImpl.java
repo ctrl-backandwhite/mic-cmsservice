@@ -1,26 +1,25 @@
 package com.backandwhite.application.usecase.impl;
 
+import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
+
 import com.backandwhite.application.port.out.CatalogPort;
-import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.application.usecase.CampaignUseCase;
+import com.backandwhite.common.domain.model.PageResult;
+import com.backandwhite.common.exception.BusinessException;
 import com.backandwhite.domain.model.Campaign;
 import com.backandwhite.domain.repository.CampaignRepository;
 import com.backandwhite.domain.valueobject.CampaignType;
-import com.backandwhite.common.exception.BusinessException;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,9 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     private final CampaignRepository campaignRepository;
     private final CatalogPort catalogPort;
 
-    private enum CampaignScope { ALL, CATEGORIES, PRODUCTS }
+    private enum CampaignScope {
+        ALL, CATEGORIES, PRODUCTS
+    }
 
     private CampaignScope resolveScope(Campaign c) {
         if (c.getAppliesToCategories() != null && !c.getAppliesToCategories().isEmpty())
@@ -40,33 +41,33 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     }
 
     private void checkOverlap(Campaign campaign) {
-        List<Campaign> conflicting = campaignRepository.findConflicting(
-                campaign.getStartDate(), campaign.getEndDate(), campaign.getId());
-        if (conflicting.isEmpty()) return;
+        List<Campaign> conflicting = campaignRepository.findConflicting(campaign.getStartDate(), campaign.getEndDate(),
+                campaign.getId());
+        if (conflicting.isEmpty())
+            return;
 
         boolean newIsFS = campaign.getType() == CampaignType.FREE_SHIPPING;
         CampaignScope newScope = resolveScope(campaign);
 
         for (Campaign existing : conflicting) {
             boolean existingIsFS = existing.getType() == CampaignType.FREE_SHIPPING;
-            if (newIsFS != existingIsFS) continue;
+            if (newIsFS != existingIsFS)
+                continue;
 
             CampaignScope existingScope = resolveScope(existing);
 
             if (newScope == CampaignScope.ALL || existingScope == CampaignScope.ALL) {
-                throw new BusinessException("OV001",
-                        "Conflicto con campana '" + existing.getName()
+                throw new BusinessException("OV001", "Conflicto con campana '" + existing.getName()
                         + "': una campana global no puede coexistir con otra en el mismo periodo");
             }
 
             if (newScope == CampaignScope.CATEGORIES && existingScope == CampaignScope.CATEGORIES) {
-                Set<String> expandedNew      = catalogPort.expandWithSubcategories(campaign.getAppliesToCategories());
+                Set<String> expandedNew = catalogPort.expandWithSubcategories(campaign.getAppliesToCategories());
                 Set<String> expandedExisting = catalogPort.expandWithSubcategories(existing.getAppliesToCategories());
-                Set<String> intersection     = new HashSet<>(expandedNew);
+                Set<String> intersection = new HashSet<>(expandedNew);
                 intersection.retainAll(expandedExisting);
                 if (!intersection.isEmpty()) {
-                    throw new BusinessException("OV002",
-                            "Conflicto con campana '" + existing.getName()
+                    throw new BusinessException("OV002", "Conflicto con campana '" + existing.getName()
                             + "': categorias solapadas (incluye subcategorias)");
                 }
             }
@@ -76,8 +77,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
                 intersection.retainAll(existing.getAppliesToProducts());
                 if (!intersection.isEmpty()) {
                     throw new BusinessException("OV003",
-                            "Conflicto con campana '" + existing.getName()
-                            + "': productos en comun");
+                            "Conflicto con campana '" + existing.getName() + "': productos en comun");
                 }
             }
 
@@ -86,8 +86,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
                 Map<String, String> prodCatMap = catalogPort.getProductCategoryMap(existing.getAppliesToProducts());
                 boolean conflict = prodCatMap.values().stream().anyMatch(expandedCats::contains);
                 if (conflict) {
-                    throw new BusinessException("OV004",
-                            "Conflicto cruzado con campana '" + existing.getName()
+                    throw new BusinessException("OV004", "Conflicto cruzado con campana '" + existing.getName()
                             + "': productos de otra campana pertenecen a categorias afectadas");
                 }
             }
@@ -97,8 +96,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
                 Map<String, String> prodCatMap = catalogPort.getProductCategoryMap(campaign.getAppliesToProducts());
                 boolean conflict = prodCatMap.values().stream().anyMatch(expandedCats::contains);
                 if (conflict) {
-                    throw new BusinessException("OV004",
-                            "Conflicto cruzado con campana '" + existing.getName()
+                    throw new BusinessException("OV004", "Conflicto cruzado con campana '" + existing.getName()
                             + "': productos afectados pertenecen a categorias de otra campana");
                 }
             }
@@ -116,8 +114,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     @Override
     @Transactional
     public Campaign update(String id, Campaign campaign) {
-        campaignRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));
+        campaignRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));
         campaign.setId(id);
         validateCampaign(campaign);
         checkOverlap(campaign);
@@ -127,8 +124,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     @Override
     @Transactional(readOnly = true)
     public Campaign findById(String id) {
-        return campaignRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));
+        return campaignRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));
     }
 
     @Override
@@ -149,8 +145,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     @Override
     @Transactional
     public void delete(String id) {
-        campaignRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));
+        campaignRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));
         campaignRepository.delete(id);
     }
 
@@ -168,8 +163,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     }
 
     private void validateCampaign(Campaign c) {
-        if (c.getStartDate() != null && c.getEndDate() != null
-                && !c.getEndDate().isAfter(c.getStartDate())) {
+        if (c.getStartDate() != null && c.getEndDate() != null && !c.getEndDate().isAfter(c.getStartDate())) {
             throw new BusinessException("VE002", "endDate must be after startDate");
         }
 

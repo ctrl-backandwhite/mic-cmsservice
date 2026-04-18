@@ -2,11 +2,10 @@ package com.backandwhite.domain.model;
 
 import com.backandwhite.common.domain.valueobject.Money;
 import com.backandwhite.domain.valueobject.CampaignType;
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import lombok.*;
 
 @Data
 @With

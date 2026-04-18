@@ -1,30 +1,29 @@
 package com.backandwhite.application.usecase.impl;
 
+import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
+import static com.backandwhite.domain.exception.Message.*;
+
+import com.backandwhite.application.port.out.CmsEventPort;
+import com.backandwhite.application.usecase.GiftCardUseCase;
 import com.backandwhite.common.domain.model.PageResult;
 import com.backandwhite.common.domain.valueobject.Money;
-import com.backandwhite.application.usecase.GiftCardUseCase;
 import com.backandwhite.domain.model.GiftCard;
 import com.backandwhite.domain.model.GiftCardDesign;
 import com.backandwhite.domain.model.GiftCardTransaction;
 import com.backandwhite.domain.repository.GiftCardRepository;
 import com.backandwhite.domain.valueobject.GiftCardStatus;
 import com.backandwhite.domain.valueobject.GiftCardTransactionType;
-import com.backandwhite.application.port.out.CmsEventPort;
+import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.SecureRandom;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-
-import static com.backandwhite.common.exception.Message.ENTITY_NOT_FOUND;
-import static com.backandwhite.domain.exception.Message.*;
 
 @Service
 @RequiredArgsConstructor
@@ -94,24 +93,13 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
         }
         GiftCard saved = giftCardRepository.save(giftCard);
 
-        giftCardRepository.saveTransaction(GiftCardTransaction.builder()
-                .giftCardId(saved.getId())
-                .type(GiftCardTransactionType.PURCHASE)
-                .amount(saved.getOriginalAmount())
-                .createdAt(Instant.now())
-                .build());
+        giftCardRepository.saveTransaction(
+                GiftCardTransaction.builder().giftCardId(saved.getId()).type(GiftCardTransactionType.PURCHASE)
+                        .amount(saved.getOriginalAmount()).createdAt(Instant.now()).build());
 
-        cmsEventPort.publishGiftCardPurchased(
-                saved.getId(),
-                saved.getCode(),
-                saved.getBuyerId(),
-                null,
-                saved.getRecipientName(),
-                saved.getRecipientEmail(),
-                saved.getOriginalAmount().toPlainString(),
-                "USD",
-                saved.getMessage(),
-                saved.getExpiryDate() != null ? saved.getExpiryDate().toString() : null,
+        cmsEventPort.publishGiftCardPurchased(saved.getId(), saved.getCode(), saved.getBuyerId(), null,
+                saved.getRecipientName(), saved.getRecipientEmail(), saved.getOriginalAmount().toPlainString(), "USD",
+                saved.getMessage(), saved.getExpiryDate() != null ? saved.getExpiryDate().toString() : null,
                 saved.getDesignId());
 
         return saved;
@@ -120,8 +108,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     @Override
     @Transactional(readOnly = true)
     public GiftCard findById(String id) {
-        return giftCardRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCard", id));
+        return giftCardRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCard", id));
     }
 
     @Override
@@ -142,8 +129,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResult<GiftCard> findByBuyerId(String buyerId, int page, int size, String sortBy,
-            boolean ascending) {
+    public PageResult<GiftCard> findByBuyerId(String buyerId, int page, int size, String sortBy, boolean ascending) {
         Pageable pageable = PageRequest.of(page, size,
                 ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
         return PageResult.from(giftCardRepository.findByBuyerId(buyerId, pageable));
@@ -227,20 +213,15 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
         }
         giftCardRepository.update(card);
 
-        GiftCardTransaction tx = giftCardRepository.saveTransaction(GiftCardTransaction.builder()
-                .giftCardId(card.getId())
-                .type(GiftCardTransactionType.REDEEM)
-                .amount(amount.negate())
-                .orderId(orderId)
-                .createdAt(Instant.now())
-                .build());
+        GiftCardTransaction tx = giftCardRepository.saveTransaction(
+                GiftCardTransaction.builder().giftCardId(card.getId()).type(GiftCardTransactionType.REDEEM)
+                        .amount(amount.negate()).orderId(orderId).createdAt(Instant.now()).build());
 
         final String cardId = card.getId();
         final String cardCode = code;
         final String buyerId = card.getBuyerId();
-        cmsEventPort.publishGiftCardRedeemed(
-                cardId, cardCode, buyerId,
-                amount.toPlainString(), card.getBalance().toPlainString(), orderId);
+        cmsEventPort.publishGiftCardRedeemed(cardId, cardCode, buyerId, amount.toPlainString(),
+                card.getBalance().toPlainString(), orderId);
 
         return tx;
     }

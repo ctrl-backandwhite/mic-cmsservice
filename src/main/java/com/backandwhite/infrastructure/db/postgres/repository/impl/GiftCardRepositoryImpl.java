@@ -9,15 +9,14 @@ import com.backandwhite.infrastructure.db.postgres.repository.GiftCardDesignJpaR
 import com.backandwhite.infrastructure.db.postgres.repository.GiftCardJpaRepository;
 import com.backandwhite.infrastructure.db.postgres.repository.GiftCardTransactionJpaRepository;
 import com.backandwhite.infrastructure.db.postgres.specification.GiftCardSpecification;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -48,16 +47,12 @@ public class GiftCardRepositoryImpl implements GiftCardRepository {
 
     @Override
     public List<GiftCardDesign> findAllActiveDesigns() {
-        return designJpa.findByActiveTrue().stream()
-                .map(mapper::toDesignDomain)
-                .toList();
+        return designJpa.findByActiveTrue().stream().map(mapper::toDesignDomain).toList();
     }
 
     @Override
     public List<GiftCardDesign> findAllDesigns() {
-        return designJpa.findAll().stream()
-                .map(mapper::toDesignDomain)
-                .toList();
+        return designJpa.findAll().stream().map(mapper::toDesignDomain).toList();
     }
 
     @Override
@@ -90,8 +85,7 @@ public class GiftCardRepositoryImpl implements GiftCardRepository {
 
     @Override
     public Page<GiftCard> findAll(Map<String, Object> filters, Pageable pageable) {
-        return cardJpa.findAll(GiftCardSpecification.withFilters(filters), pageable)
-                .map(mapper::toDomain);
+        return cardJpa.findAll(GiftCardSpecification.withFilters(filters), pageable).map(mapper::toDomain);
     }
 
     @Override
@@ -106,14 +100,12 @@ public class GiftCardRepositoryImpl implements GiftCardRepository {
 
     @Override
     public List<GiftCard> findExpiredCards(java.time.LocalDate today) {
-        return cardJpa.findByStatusInAndExpiryDateBefore(
-                java.util.List.of(
-                        com.backandwhite.domain.valueobject.GiftCardStatus.PENDING,
-                        com.backandwhite.domain.valueobject.GiftCardStatus.ACTIVE),
-                today)
-                .stream()
-                .map(mapper::toDomain)
-                .toList();
+        return cardJpa
+                .findByStatusInAndExpiryDateBefore(
+                        java.util.List.of(com.backandwhite.domain.valueobject.GiftCardStatus.PENDING,
+                                com.backandwhite.domain.valueobject.GiftCardStatus.ACTIVE),
+                        today)
+                .stream().map(mapper::toDomain).toList();
     }
 
     // Transactions
@@ -126,8 +118,7 @@ public class GiftCardRepositoryImpl implements GiftCardRepository {
 
     @Override
     public List<GiftCardTransaction> findTransactionsByGiftCardId(String giftCardId) {
-        return transactionJpa.findByGiftCardIdOrderByCreatedAtDesc(giftCardId).stream()
-                .map(mapper::toTransactionDomain)
+        return transactionJpa.findByGiftCardIdOrderByCreatedAtDesc(giftCardId).stream().map(mapper::toTransactionDomain)
                 .toList();
     }
 }
