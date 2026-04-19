@@ -35,8 +35,9 @@ public class CampaignController {
     @NxPublic
     @Operation(summary = "Listar campanas activas (publico)")
     public ResponseEntity<List<CampaignDtoOut>> findAllActive(
-            @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth) {
-        return ResponseEntity.ok(campaignApiMapper.toDtoList(campaignUseCase.findAllActive()));
+            @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "es") String locale) {
+        return ResponseEntity.ok(campaignApiMapper.toDtoList(campaignUseCase.findAllActive(locale)));
     }
 
     @GetMapping

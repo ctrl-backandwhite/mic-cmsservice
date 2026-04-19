@@ -50,6 +50,30 @@ public class CampaignRepositoryImpl implements CampaignRepository {
     }
 
     @Override
+    public List<Campaign> findAllActive(String locale) {
+        List<Campaign> list = findAllActive();
+        if (locale == null || locale.isBlank() || list.isEmpty())
+            return list;
+
+        List<String> ids = list.stream().map(Campaign::getId).toList();
+        Map<String, Object[]> translations = jpa.findTranslations(ids, locale).stream()
+                .collect(java.util.stream.Collectors.toMap(r -> (String) r[0], r -> r));
+
+        list.forEach(c -> {
+            Object[] t = translations.get(c.getId());
+            if (t == null)
+                return;
+            if (t[1] != null)
+                c.setName((String) t[1]);
+            if (t[2] != null)
+                c.setBadge((String) t[2]);
+            if (t[3] != null)
+                c.setDescription((String) t[3]);
+        });
+        return list;
+    }
+
+    @Override
     public List<Campaign> findConflicting(Instant startDate, Instant endDate, String excludeId) {
         return jpa.findConflicting(startDate, endDate, excludeId).stream().map(mapper::toDomain).toList();
     }

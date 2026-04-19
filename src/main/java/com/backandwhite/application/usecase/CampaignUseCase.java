@@ -16,6 +16,11 @@ public interface CampaignUseCase {
 
     List<Campaign> findAllActive();
 
+    /**
+     * Active campaigns with name/badge/description translated to the given locale.
+     */
+    List<Campaign> findAllActive(String locale);
+
     void delete(String id);
 
     void toggleActive(String id);

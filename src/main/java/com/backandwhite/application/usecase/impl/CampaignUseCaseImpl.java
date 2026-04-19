@@ -143,6 +143,12 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Campaign> findAllActive(String locale) {
+        return campaignRepository.findAllActive(locale);
+    }
+
+    @Override
     @Transactional
     public void delete(String id) {
         campaignRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));

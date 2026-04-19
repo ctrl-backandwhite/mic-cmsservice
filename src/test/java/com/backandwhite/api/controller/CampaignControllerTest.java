@@ -41,9 +41,9 @@ class CampaignControllerTest {
 
     @Test
     void findAllActive_ok() {
-        when(useCase.findAllActive()).thenReturn(List.of());
+        when(useCase.findAllActive("es")).thenReturn(List.of());
         when(mapper.toDtoList(List.of())).thenReturn(List.of());
-        assertThat(controller.findAllActive("tok").getStatusCode().value()).isEqualTo(200);
+        assertThat(controller.findAllActive("tok", "es").getStatusCode().value()).isEqualTo(200);
     }
 
     @Test

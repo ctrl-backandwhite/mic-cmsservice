@@ -20,6 +20,11 @@ public interface CampaignRepository {
     List<Campaign> findAllActive();
 
     /**
+     * Active campaigns with name/badge/description overlaid for the given locale.
+     */
+    List<Campaign> findAllActive(String locale);
+
+    /**
      * Returns active campaigns whose date range overlaps [startDate, endDate),
      * excluding the campaign with the given excludeId (used for updates).
      */

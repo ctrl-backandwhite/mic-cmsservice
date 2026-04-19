@@ -24,4 +24,16 @@ public interface CampaignJpaRepository
             """)
     List<CampaignEntity> findConflicting(@Param("startDate") Instant startDate, @Param("endDate") Instant endDate,
             @Param("excludeId") String excludeId);
+
+    /**
+     * Fetch translation overlays (name, badge, description) for a set of campaign
+     * ids in the given locale. Used to overlay the values returned by findAllActive
+     * without re-mapping the whole entity.
+     */
+    @Query(value = """
+            SELECT campaign_id, name, badge, description
+            FROM campaign_translations
+            WHERE locale = :locale AND campaign_id IN :ids
+            """, nativeQuery = true)
+    List<Object[]> findTranslations(@Param("ids") List<String> ids, @Param("locale") String locale);
 }
