@@ -40,7 +40,7 @@ public class CmsOrderEventConsumerService {
             LoyaltyResult result = loyaltyMachine.processOrderDelivery(userId, amount, orderId);
             log.info("::> Loyalty processed: user={}, earned={}, bonus={}, tier={}, levelUp={}", userId,
                     result.getEarnedPoints(), result.getBonusPoints(), result.getCurrentTier(), result.isLeveledUp());
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.error("::> Failed to award loyalty points for order={}: {}", orderId, e.getMessage(), e);
         }
     }

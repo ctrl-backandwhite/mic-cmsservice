@@ -22,7 +22,7 @@ public class CurrencyRateSyncJob {
         try {
             int count = currencyRateUseCase.syncFromApi();
             log.info("::> Scheduled sync completed: {} rates updated", count);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.error("::> Scheduled currency rate sync failed: {}", e.getMessage(), e);
         }
     }

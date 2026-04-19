@@ -47,7 +47,7 @@ public class CatalogClient implements CatalogPort {
                 if (product != null && product.get("categoryId") != null) {
                     result.put(productId, product.get("categoryId").toString());
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.warn("Could not resolve category for product {}: {}", productId, e.getMessage());
             }
         }
@@ -85,7 +85,7 @@ public class CatalogClient implements CatalogPort {
             }
             return expanded;
 
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.warn("Could not expand subcategories (catalog unavailable): {}", e.getMessage());
             return new HashSet<>(categoryIds); // Fail-open: return only the original IDs
         }

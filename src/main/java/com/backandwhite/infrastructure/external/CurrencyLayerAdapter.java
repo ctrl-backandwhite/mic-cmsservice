@@ -56,7 +56,7 @@ public class CurrencyLayerAdapter implements CurrencyLayerPort {
             log.info("::> Fetched {} currency rates from CurrencyLayer", rates.size());
             return rates;
 
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.error("::> Failed to fetch rates from CurrencyLayer: {}", e.getMessage(), e);
             return Collections.emptyList();
         }
