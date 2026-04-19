@@ -14,6 +14,9 @@ public interface SlideUseCase {
 
     List<Slide> findAllActive();
 
+    /** Active slides with fields translated for the given locale. */
+    List<Slide> findAllActive(String locale);
+
     void delete(String id);
 
     void updatePositions(List<Slide> slides);

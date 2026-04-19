@@ -49,6 +49,12 @@ public class SlideUseCaseImpl implements SlideUseCase {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Slide> findAllActive(String locale) {
+        return slideRepository.findAllActive(locale);
+    }
+
+    @Override
     @Transactional
     public void delete(String id) {
         slideRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Slide", id));

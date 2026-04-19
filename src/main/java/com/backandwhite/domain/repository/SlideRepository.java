@@ -13,6 +13,9 @@ public interface SlideRepository {
 
     List<Slide> findAllActive();
 
+    /** Active slides with title/subtitle/buttonText in the requested locale. */
+    List<Slide> findAllActive(String locale);
+
     List<Slide> findAll();
 
     void delete(String id);

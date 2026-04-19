@@ -29,9 +29,9 @@ public class SlideController {
     @NxPublic
     @GetMapping("/active")
     @Operation(summary = "Listar slides activos (público)")
-    public ResponseEntity<List<SlideDtoOut>> findAllActive(
-            @RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth) {
-        return ResponseEntity.ok(slideApiMapper.toDtoList(slideUseCase.findAllActive()));
+    public ResponseEntity<List<SlideDtoOut>> findAllActive(@RequestHeader(AppConstants.HEADER_NX036_AUTH) String nxAuth,
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "es") String locale) {
+        return ResponseEntity.ok(slideApiMapper.toDtoList(slideUseCase.findAllActive(locale)));
     }
 
     @NxAdmin

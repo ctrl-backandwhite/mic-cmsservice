@@ -32,9 +32,9 @@ class SlideControllerTest {
 
     @Test
     void findAllActive_returns200() {
-        when(useCase.findAllActive()).thenReturn(List.of());
+        when(useCase.findAllActive("es")).thenReturn(List.of());
         when(mapper.toDtoList(List.of())).thenReturn(List.of());
-        ResponseEntity<List<SlideDtoOut>> r = controller.findAllActive("tok");
+        ResponseEntity<List<SlideDtoOut>> r = controller.findAllActive("tok", "es");
         assertThat(r.getStatusCode().value()).isEqualTo(200);
     }
 
