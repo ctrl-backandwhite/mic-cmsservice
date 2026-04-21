@@ -132,6 +132,35 @@ public class LoyaltyMachine {
     }
 
     /**
+     * Reverses the loyalty points awarded for a cancelled order. Looks up the total
+     * EARN points registered for the {@code orderId} (regular reward + any level-up
+     * bonus) and writes a compensating REDEEM transaction with the negated amount.
+     *
+     * <p>
+     * Idempotent: if a REDEEM already exists for the orderId, or no EARN was ever
+     * registered, the method is a no-op.
+     */
+    @Transactional
+    public void reverseOrderPoints(String userId, String orderId) {
+        if (orderId == null || orderId.isBlank()) {
+            return;
+        }
+        if (loyaltyRepository.existsReverseTransactionByOrderId(orderId)) {
+            log.info("::> Loyalty reversal already applied for order={}, skipping", orderId);
+            return;
+        }
+        int awarded = loyaltyRepository.sumEarnPointsByOrderId(orderId);
+        if (awarded <= 0) {
+            log.debug("::> No loyalty points to reverse for order={} (nothing awarded)", orderId);
+            return;
+        }
+        loyaltyRepository.saveTransaction(LoyaltyTransaction.builder().userId(userId).points(-awarded)
+                .type(LoyaltyTransactionType.REDEEM).description("Reversal: order cancelled (-" + awarded + " pts)")
+                .orderId(orderId).createdAt(Instant.now()).build());
+        log.info("::> Reversed {} loyalty points for cancelled order={}, user={}", awarded, orderId, userId);
+    }
+
+    /**
      * Resuelve el tier de un usuario dado su balance de puntos. Itera los tiers
      * ordenados por minPoints ASC; el último que matchea gana.
      *

@@ -110,4 +110,14 @@ public class LoyaltyRepositoryImpl implements LoyaltyRepository {
     public boolean existsEarnTransactionByOrderId(String orderId) {
         return transactionJpa.existsByOrderIdAndType(orderId, LoyaltyTransactionType.EARN);
     }
+
+    @Override
+    public int sumEarnPointsByOrderId(String orderId) {
+        return transactionJpa.sumPointsByOrderIdAndType(orderId, LoyaltyTransactionType.EARN);
+    }
+
+    @Override
+    public boolean existsReverseTransactionByOrderId(String orderId) {
+        return transactionJpa.existsByOrderIdAndType(orderId, LoyaltyTransactionType.REDEEM);
+    }
 }

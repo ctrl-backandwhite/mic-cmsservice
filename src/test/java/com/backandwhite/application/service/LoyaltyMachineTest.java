@@ -147,4 +147,49 @@ class LoyaltyMachineTest {
         blank.setCurrentTier("X");
         assertThat(blank.getCurrentTier()).isEqualTo("X");
     }
+
+    @Test
+    void reverseOrderPoints_writesCompensatingRedeemWithNegativeAmount() {
+        when(loyaltyRepository.existsReverseTransactionByOrderId("o1")).thenReturn(false);
+        when(loyaltyRepository.sumEarnPointsByOrderId("o1")).thenReturn(200);
+        when(loyaltyRepository.saveTransaction(any(LoyaltyTransaction.class))).thenAnswer(i -> i.getArgument(0));
+
+        machine.reverseOrderPoints("u1", "o1");
+
+        org.mockito.ArgumentCaptor<LoyaltyTransaction> captor = org.mockito.ArgumentCaptor
+                .forClass(LoyaltyTransaction.class);
+        verify(loyaltyRepository).saveTransaction(captor.capture());
+        LoyaltyTransaction saved = captor.getValue();
+        assertThat(saved.getPoints()).isEqualTo(-200);
+        assertThat(saved.getType()).isEqualTo(com.backandwhite.domain.valueobject.LoyaltyTransactionType.REDEEM);
+        assertThat(saved.getOrderId()).isEqualTo("o1");
+    }
+
+    @Test
+    void reverseOrderPoints_noPointsAwarded_noOp() {
+        when(loyaltyRepository.existsReverseTransactionByOrderId("o1")).thenReturn(false);
+        when(loyaltyRepository.sumEarnPointsByOrderId("o1")).thenReturn(0);
+
+        machine.reverseOrderPoints("u1", "o1");
+
+        verify(loyaltyRepository, never()).saveTransaction(any());
+    }
+
+    @Test
+    void reverseOrderPoints_alreadyReversed_isIdempotent() {
+        when(loyaltyRepository.existsReverseTransactionByOrderId("o1")).thenReturn(true);
+
+        machine.reverseOrderPoints("u1", "o1");
+
+        verify(loyaltyRepository, never()).sumEarnPointsByOrderId(anyString());
+        verify(loyaltyRepository, never()).saveTransaction(any());
+    }
+
+    @Test
+    void reverseOrderPoints_nullOrBlankOrderId_noOp() {
+        machine.reverseOrderPoints("u1", null);
+        machine.reverseOrderPoints("u1", "   ");
+        verify(loyaltyRepository, never()).existsReverseTransactionByOrderId(anyString());
+        verify(loyaltyRepository, never()).saveTransaction(any());
+    }
 }

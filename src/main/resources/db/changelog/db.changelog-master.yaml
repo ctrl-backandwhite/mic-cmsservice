@@ -114,3 +114,12 @@ databaseChangeLog:
               - sqlFile:
                     path: db.changelog-1.13.sql
                     relativeToChangelogFile: "true"
+
+    - changeSet:
+          id: 15-seed-gift-card-designs
+          author: Jesus.Finol
+          context: local,develop
+          changes:
+              - sqlFile:
+                    path: db.changelog-1.14.sql
+                    relativeToChangelogFile: "true"

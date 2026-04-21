@@ -46,4 +46,16 @@ public interface LoyaltyRepository {
      * (idempotency).
      */
     boolean existsEarnTransactionByOrderId(String orderId);
+
+    /**
+     * Sum of all EARN points registered for an order (covers regular purchase
+     * points + any level-up bonus awarded on the same order).
+     */
+    int sumEarnPointsByOrderId(String orderId);
+
+    /**
+     * Check if a compensating REDEEM transaction already exists for the given
+     * orderId (idempotency for cancellation reversals).
+     */
+    boolean existsReverseTransactionByOrderId(String orderId);
 }

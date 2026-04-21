@@ -16,4 +16,7 @@ public interface LoyaltyTransactionJpaRepository extends JpaRepository<LoyaltyTr
     int sumPointsByUserId(@Param("userId") String userId);
 
     boolean existsByOrderIdAndType(String orderId, LoyaltyTransactionType type);
+
+    @Query("SELECT COALESCE(SUM(t.points), 0) FROM LoyaltyTransactionEntity t WHERE t.orderId = :orderId AND t.type = :type")
+    int sumPointsByOrderIdAndType(@Param("orderId") String orderId, @Param("type") LoyaltyTransactionType type);
 }
