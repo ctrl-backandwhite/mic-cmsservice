@@ -7,5 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LoyaltyRuleJpaRepository extends JpaRepository<LoyaltyRuleEntity, String> {
 
-    Optional<LoyaltyRuleEntity> findByActionAndActiveTrue(LoyaltyAction action);
+    /**
+     * Returns the most recent active rule for the given action.
+     *
+     * <p>
+     * The admin UI allows multiple rules to coexist (e.g. seasonal overrides), so
+     * we never assume uniqueness — always pick the latest one to avoid
+     * {@code NonUniqueResultException} crashing the loyalty pipeline.
+     */
+    Optional<LoyaltyRuleEntity> findFirstByActionAndActiveTrueOrderByCreatedAtDesc(LoyaltyAction action);
 }
