@@ -84,7 +84,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
 
     @Override
     @Transactional
-    public GiftCard purchase(GiftCard giftCard) {
+    public GiftCard purchase(GiftCard giftCard, String buyerEmail) {
         giftCard.setCode(generateCode());
         giftCard.setBalance(giftCard.getOriginalAmount());
         giftCard.setStatus(GiftCardStatus.PENDING);
@@ -97,7 +97,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
                 GiftCardTransaction.builder().giftCardId(saved.getId()).type(GiftCardTransactionType.PURCHASE)
                         .amount(saved.getOriginalAmount()).createdAt(Instant.now()).build());
 
-        cmsEventPort.publishGiftCardPurchased(saved.getId(), saved.getCode(), saved.getBuyerId(), null,
+        cmsEventPort.publishGiftCardPurchased(saved.getId(), saved.getCode(), saved.getBuyerId(), null, buyerEmail,
                 saved.getRecipientName(), saved.getRecipientEmail(), saved.getOriginalAmount().toPlainString(), "USD",
                 saved.getMessage(), saved.getExpiryDate() != null ? saved.getExpiryDate().toString() : null,
                 saved.getDesignId());

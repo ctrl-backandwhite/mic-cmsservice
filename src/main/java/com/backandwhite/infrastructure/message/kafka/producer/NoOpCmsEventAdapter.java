@@ -20,8 +20,8 @@ public class NoOpCmsEventAdapter implements CmsEventPort {
 
     @Override
     public void publishGiftCardPurchased(String giftCardId, String code, String buyerId, String buyerName,
-            String recipientName, String recipientEmail, String amount, String currency, String message,
-            String expiryDate, String designId) {
+            String buyerEmail, String recipientName, String recipientEmail, String amount, String currency,
+            String message, String expiryDate, String designId) {
     }
 
     @Override

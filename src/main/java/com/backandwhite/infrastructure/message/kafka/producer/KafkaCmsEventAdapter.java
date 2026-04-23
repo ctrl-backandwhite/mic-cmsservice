@@ -35,10 +35,10 @@ public class KafkaCmsEventAdapter implements CmsEventPort {
     }
 
     public void publishGiftCardPurchased(String giftCardId, String code, String buyerId, String buyerName,
-            String recipientName, String recipientEmail, String amount, String currency, String message,
-            String expiryDate, String designId) {
+            String buyerEmail, String recipientName, String recipientEmail, String amount, String currency,
+            String message, String expiryDate, String designId) {
         GiftCardPurchasedEvent event = GiftCardPurchasedEvent.newBuilder().setGiftCardId(giftCardId).setCode(code)
-                .setBuyerId(buyerId).setBuyerName(buyerName).setRecipientName(recipientName)
+                .setBuyerId(buyerId).setBuyerName(buyerName).setBuyerEmail(buyerEmail).setRecipientName(recipientName)
                 .setRecipientEmail(recipientEmail).setAmount(amount).setCurrency(currency).setMessage(message)
                 .setExpiryDate(expiryDate).setDesignId(designId).setTimestamp(now()).build();
         send(AppConstants.KAFKA_TOPIC_GIFT_CARD_PURCHASED, giftCardId, event);

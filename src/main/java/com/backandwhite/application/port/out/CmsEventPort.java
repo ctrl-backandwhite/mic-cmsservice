@@ -7,7 +7,7 @@ public interface CmsEventPort {
     void publishLoyaltyPointsRedeemed(String userId, int pointsRedeemed, int totalPoints, String couponCode,
             String discountAmount);
 
-    void publishGiftCardPurchased(String giftCardId, String code, String buyerId, String buyerName,
+    void publishGiftCardPurchased(String giftCardId, String code, String buyerId, String buyerName, String buyerEmail,
             String recipientName, String recipientEmail, String amount, String currency, String message,
             String expiryDate, String designId);
 

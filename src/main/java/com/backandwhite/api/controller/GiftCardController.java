@@ -104,10 +104,12 @@ public class GiftCardController {
     public ResponseEntity<GiftCardDtoOut> purchase(
             @RequestHeader(value = AppConstants.HEADER_NX036_AUTH, required = false) String nxAuth,
             @RequestHeader(value = "X-Auth-Subject", required = false) String userId,
+            @RequestHeader(value = AppConstants.HEADER_AUTH_EMAIL, required = false) String authEmail,
             @Valid @RequestBody GiftCardPurchaseDtoIn dto) {
         GiftCard card = giftCardApiMapper.toPurchaseDomain(dto);
         card.setBuyerId(userId);
-        GiftCard created = giftCardUseCase.purchase(card);
+        String buyerEmail = (authEmail != null && !authEmail.isBlank()) ? authEmail : dto.getBuyerEmail();
+        GiftCard created = giftCardUseCase.purchase(card, buyerEmail);
         return ResponseEntity.status(HttpStatus.CREATED).body(giftCardApiMapper.toDto(created));
     }
 

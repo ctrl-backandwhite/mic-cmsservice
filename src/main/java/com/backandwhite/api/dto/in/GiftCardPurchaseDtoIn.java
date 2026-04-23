@@ -26,4 +26,6 @@ public class GiftCardPurchaseDtoIn {
     private String message;
     private LocalDate sendDate;
     private LocalDate expiryDate;
+    @Schema(description = "Buyer email for guest checkout. Ignored when X-Auth-Email header is present.")
+    private String buyerEmail;
 }

@@ -23,7 +23,7 @@ public interface GiftCardUseCase {
     void deleteDesign(String id);
 
     // Gift Cards
-    GiftCard purchase(GiftCard giftCard);
+    GiftCard purchase(GiftCard giftCard, String buyerEmail);
 
     GiftCard findById(String id);
 
