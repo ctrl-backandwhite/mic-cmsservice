@@ -25,6 +25,8 @@ public class GiftCardDtoOut {
     private String recipientEmail;
     private String message;
     private LocalDate sendDate;
+    /** Precise delivery instant; drives the scheduler. Null for immediate cards. */
+    private Instant sendAt;
     private LocalDate expiryDate;
     private Instant activatedAt;
     /**

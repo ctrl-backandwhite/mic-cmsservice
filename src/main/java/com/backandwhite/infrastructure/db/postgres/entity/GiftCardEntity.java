@@ -60,6 +60,9 @@ public class GiftCardEntity extends AuditableEntity {
     @Column(name = "send_date")
     private LocalDate sendDate;
 
+    @Column(name = "send_at")
+    private Instant sendAt;
+
     @Column(name = "expiry_date", nullable = false)
     private LocalDate expiryDate;
 

@@ -93,11 +93,17 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
             giftCard.setExpiryDate(LocalDate.now().plusYears(1));
         }
 
-        // If the buyer scheduled the delivery for a future date, persist the card
-        // but hold back the Kafka event — the GiftCardScheduledSender picks it up
-        // once sendDate arrives. Otherwise fire the event straight away so the
-        // recipient email + fiscal invoice go out immediately.
-        boolean deferDelivery = giftCard.getSendDate() != null && giftCard.getSendDate().isAfter(LocalDate.now());
+        // Precise scheduling: prefer sendAt (hour + minute) over sendDate (day
+        // only). When the buyer picks "today at 11:43" the old day-level check
+        // saw it as today and fired immediately; comparing to Instant.now()
+        // honours the selected minute.
+        Instant scheduledFor = giftCard.getSendAt();
+        if (scheduledFor == null && giftCard.getSendDate() != null) {
+            // Legacy path: day-only schedule → midnight UTC of that date.
+            scheduledFor = giftCard.getSendDate().atStartOfDay(java.time.ZoneOffset.UTC).toInstant();
+            giftCard.setSendAt(scheduledFor);
+        }
+        boolean deferDelivery = scheduledFor != null && scheduledFor.isAfter(Instant.now());
         giftCard.setEmailSent(!deferDelivery);
 
         GiftCard saved = giftCardRepository.save(giftCard);

@@ -2,6 +2,7 @@ package com.backandwhite.infrastructure.db.postgres.repository;
 
 import com.backandwhite.domain.valueobject.GiftCardStatus;
 import com.backandwhite.infrastructure.db.postgres.entity.GiftCardEntity;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public interface GiftCardJpaRepository
             SELECT g FROM GiftCardEntity g
             WHERE g.emailSent = false
               AND g.status = com.backandwhite.domain.valueobject.GiftCardStatus.PENDING
-              AND (g.sendDate IS NULL OR g.sendDate <= :today)
+              AND (g.sendAt IS NULL OR g.sendAt <= :now)
             """)
-    List<GiftCardEntity> findPendingSends(@Param("today") LocalDate today);
+    List<GiftCardEntity> findPendingSends(@Param("now") Instant now);
 }

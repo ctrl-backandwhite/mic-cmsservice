@@ -109,8 +109,8 @@ public class GiftCardRepositoryImpl implements GiftCardRepository {
     }
 
     @Override
-    public List<GiftCard> findPendingSends(java.time.LocalDate today) {
-        return cardJpa.findPendingSends(today).stream().map(mapper::toDomain).toList();
+    public List<GiftCard> findPendingSends(java.time.Instant now) {
+        return cardJpa.findPendingSends(now).stream().map(mapper::toDomain).toList();
     }
 
     // Transactions

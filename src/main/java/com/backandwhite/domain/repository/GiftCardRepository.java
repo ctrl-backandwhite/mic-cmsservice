@@ -42,11 +42,13 @@ public interface GiftCardRepository {
     List<GiftCard> findExpiredCards(LocalDate today);
 
     /**
-     * Gift cards whose scheduled delivery date has arrived and have not yet had
-     * their Kafka purchase event published (email_sent = false and send_date is
-     * null or already in the past). Consumed by the scheduled sender job.
+     * Gift cards whose scheduled delivery instant has arrived and have not yet had
+     * their Kafka purchase event published (email_sent = false and send_at is null
+     * or already in the past). Consumed by the scheduled sender job. Uses
+     * {@link java.time.Instant} so hour + minute precision is respected — a card
+     * scheduled for "today at 11:43" must NOT fire at 11:00.
      */
-    List<GiftCard> findPendingSends(LocalDate today);
+    List<GiftCard> findPendingSends(java.time.Instant now);
 
     // Transactions
     GiftCardTransaction saveTransaction(GiftCardTransaction transaction);

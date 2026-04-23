@@ -24,6 +24,12 @@ public class GiftCard {
     private String recipientEmail;
     private String message;
     private LocalDate sendDate;
+    /**
+     * Precise delivery instant. When set in the future, the scheduler holds the
+     * Kafka purchase event until this moment is reached. {@code sendDate} is kept
+     * as a day-level legacy field for display; {@code sendAt} drives scheduling.
+     */
+    private Instant sendAt;
     private LocalDate expiryDate;
     private Instant activatedAt;
     /**

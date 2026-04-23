@@ -3,7 +3,7 @@ package com.backandwhite.application.job;
 import com.backandwhite.application.port.out.CmsEventPort;
 import com.backandwhite.domain.model.GiftCard;
 import com.backandwhite.domain.repository.GiftCardRepository;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,11 +27,13 @@ public class GiftCardScheduledSenderJob {
     private final GiftCardRepository giftCardRepository;
     private final CmsEventPort cmsEventPort;
 
-    @Scheduled(cron = "0 */5 * * * *")
+    // Every minute instead of every 5 so a buyer picking "in 2 minutes" does
+    // not wait a whole five-minute window. Query is cheap (partial index).
+    @Scheduled(cron = "0 * * * * *")
     @Transactional
     public void dispatchDueGiftCards() {
-        LocalDate today = LocalDate.now();
-        List<GiftCard> due = giftCardRepository.findPendingSends(today);
+        Instant now = Instant.now();
+        List<GiftCard> due = giftCardRepository.findPendingSends(now);
         if (due.isEmpty()) {
             return;
         }

@@ -132,3 +132,12 @@ databaseChangeLog:
               - sqlFile:
                     path: db.changelog-1.15.sql
                     relativeToChangelogFile: "true"
+
+    - changeSet:
+          id: 17-gift-card-send-at-instant
+          author: Jesus.Finol
+          context: local,develop
+          changes:
+              - sqlFile:
+                    path: db.changelog-1.16.sql
+                    relativeToChangelogFile: "true"
