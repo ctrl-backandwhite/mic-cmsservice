@@ -108,6 +108,11 @@ public class GiftCardRepositoryImpl implements GiftCardRepository {
                 .stream().map(mapper::toDomain).toList();
     }
 
+    @Override
+    public List<GiftCard> findPendingSends(java.time.LocalDate today) {
+        return cardJpa.findPendingSends(today).stream().map(mapper::toDomain).toList();
+    }
+
     // Transactions
 
     @Override

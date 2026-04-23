@@ -123,3 +123,12 @@ databaseChangeLog:
               - sqlFile:
                     path: db.changelog-1.14.sql
                     relativeToChangelogFile: "true"
+
+    - changeSet:
+          id: 16-gift-card-email-sent-flag
+          author: Jesus.Finol
+          context: local,develop
+          changes:
+              - sqlFile:
+                    path: db.changelog-1.15.sql
+                    relativeToChangelogFile: "true"

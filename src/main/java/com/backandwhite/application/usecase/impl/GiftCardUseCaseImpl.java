@@ -88,19 +88,30 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
         giftCard.setCode(generateCode());
         giftCard.setBalance(giftCard.getOriginalAmount());
         giftCard.setStatus(GiftCardStatus.PENDING);
+        giftCard.setBuyerEmail(buyerEmail);
         if (giftCard.getExpiryDate() == null) {
             giftCard.setExpiryDate(LocalDate.now().plusYears(1));
         }
+
+        // If the buyer scheduled the delivery for a future date, persist the card
+        // but hold back the Kafka event — the GiftCardScheduledSender picks it up
+        // once sendDate arrives. Otherwise fire the event straight away so the
+        // recipient email + fiscal invoice go out immediately.
+        boolean deferDelivery = giftCard.getSendDate() != null && giftCard.getSendDate().isAfter(LocalDate.now());
+        giftCard.setEmailSent(!deferDelivery);
+
         GiftCard saved = giftCardRepository.save(giftCard);
 
         giftCardRepository.saveTransaction(
                 GiftCardTransaction.builder().giftCardId(saved.getId()).type(GiftCardTransactionType.PURCHASE)
                         .amount(saved.getOriginalAmount()).createdAt(Instant.now()).build());
 
-        cmsEventPort.publishGiftCardPurchased(saved.getId(), saved.getCode(), saved.getBuyerId(), null, buyerEmail,
-                saved.getRecipientName(), saved.getRecipientEmail(), saved.getOriginalAmount().toPlainString(), "USD",
-                saved.getMessage(), saved.getExpiryDate() != null ? saved.getExpiryDate().toString() : null,
-                saved.getDesignId());
+        if (!deferDelivery) {
+            cmsEventPort.publishGiftCardPurchased(saved.getId(), saved.getCode(), saved.getBuyerId(), null, buyerEmail,
+                    saved.getRecipientName(), saved.getRecipientEmail(), saved.getOriginalAmount().toPlainString(),
+                    "USD", saved.getMessage(), saved.getExpiryDate() != null ? saved.getExpiryDate().toString() : null,
+                    saved.getDesignId());
+        }
 
         return saved;
     }

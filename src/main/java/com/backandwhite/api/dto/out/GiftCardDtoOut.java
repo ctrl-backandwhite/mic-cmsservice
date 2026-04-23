@@ -27,6 +27,12 @@ public class GiftCardDtoOut {
     private LocalDate sendDate;
     private LocalDate expiryDate;
     private Instant activatedAt;
+    /**
+     * True once the Kafka purchase event has fired (and therefore the recipient
+     * email + fiscal invoice went out). False while a scheduled card is waiting for
+     * its {@code sendDate}.
+     */
+    private boolean emailSent;
     private Instant createdAt;
     private Instant updatedAt;
 }

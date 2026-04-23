@@ -45,6 +45,9 @@ public class GiftCardEntity extends AuditableEntity {
     @Column(name = "buyer_id", length = 64)
     private String buyerId;
 
+    @Column(name = "buyer_email", length = 255)
+    private String buyerEmail;
+
     @Column(name = "recipient_name", length = 200)
     private String recipientName;
 
@@ -62,4 +65,7 @@ public class GiftCardEntity extends AuditableEntity {
 
     @Column(name = "activated_at")
     private Instant activatedAt;
+
+    @Column(name = "email_sent", nullable = false)
+    private boolean emailSent;
 }

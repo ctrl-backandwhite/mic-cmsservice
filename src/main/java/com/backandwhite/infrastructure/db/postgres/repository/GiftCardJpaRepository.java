@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface GiftCardJpaRepository
         extends
@@ -22,4 +24,12 @@ public interface GiftCardJpaRepository
     Page<GiftCardEntity> findByRecipientEmail(String email, Pageable pageable);
 
     List<GiftCardEntity> findByStatusInAndExpiryDateBefore(List<GiftCardStatus> statuses, LocalDate date);
+
+    @Query("""
+            SELECT g FROM GiftCardEntity g
+            WHERE g.emailSent = false
+              AND g.status = com.backandwhite.domain.valueobject.GiftCardStatus.PENDING
+              AND (g.sendDate IS NULL OR g.sendDate <= :today)
+            """)
+    List<GiftCardEntity> findPendingSends(@Param("today") LocalDate today);
 }

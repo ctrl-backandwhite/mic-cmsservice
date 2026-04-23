@@ -41,6 +41,13 @@ public interface GiftCardRepository {
 
     List<GiftCard> findExpiredCards(LocalDate today);
 
+    /**
+     * Gift cards whose scheduled delivery date has arrived and have not yet had
+     * their Kafka purchase event published (email_sent = false and send_date is
+     * null or already in the past). Consumed by the scheduled sender job.
+     */
+    List<GiftCard> findPendingSends(LocalDate today);
+
     // Transactions
     GiftCardTransaction saveTransaction(GiftCardTransaction transaction);
 
