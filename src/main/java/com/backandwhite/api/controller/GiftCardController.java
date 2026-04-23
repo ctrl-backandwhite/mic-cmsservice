@@ -97,8 +97,10 @@ public class GiftCardController {
     // ── GiftCards ───────────────────────────────────────────────────────
 
     @PostMapping("/purchase")
-    @NxUser
-    @Operation(summary = "Comprar gift card")
+    @NxPublic
+    @Operation(summary = "Comprar gift card", description = "Permite comprar una tarjeta regalo como invitado o como usuario autenticado. "
+            + "Si hay sesión, buyerId se completa con el sub del JWT (X-Auth-Subject); "
+            + "si no, la compra se registra sin buyerId (el destinatario aún la recibe por email).")
     public ResponseEntity<GiftCardDtoOut> purchase(
             @RequestHeader(value = AppConstants.HEADER_NX036_AUTH, required = false) String nxAuth,
             @RequestHeader(value = "X-Auth-Subject", required = false) String userId,
