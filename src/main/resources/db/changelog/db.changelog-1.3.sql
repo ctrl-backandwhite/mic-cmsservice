@@ -13,7 +13,7 @@ VALUES
 -- 2. Fashion season
 ('SLD-002', 'Nueva Colección de Verano', 'Descubre las últimas tendencias de temporada',
  'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1920&q=80',
- '/?category=Moda', 'Explorar Colección', 2, false, NOW()),
+ '/?category=Women%27s%20Clothing', 'Explorar Colección', 2, false, NOW()),
 
 -- 3. Gaming promo
 ('SLD-003', 'Gaming Week: Hasta 50% OFF', 'Consolas, periféricos y accesorios al mejor precio',
@@ -23,7 +23,7 @@ VALUES
 -- 4. Free shipping
 ('SLD-004', 'Envío Gratis en Tu Primera Compra', 'Regístrate y disfruta de envío gratuito sin mínimo',
  'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1920&q=80',
- '/?ofertas=true', 'Comprar Ahora', 4, false, NOW()),
+ '/store', 'Comprar Ahora', 4, false, NOW()),
 
 -- 5. Outlet clearance
 ('SLD-005', 'Outlet: Liquidación Total', 'Últimas unidades con descuentos de hasta 70%',
@@ -38,12 +38,12 @@ VALUES
 -- 7. Back to school
 ('SLD-007', 'Vuelta a Clases: Todo lo que Necesitas', 'Laptops, mochilas y accesorios escolares con descuento',
  'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1920&q=80',
- '/?ofertas=true&category=Educación', 'Ver Ofertas', 7, false, NOW()),
+ '/?category=Toys%2C%20Kids%20%26%20Babies', 'Ver Ofertas', 7, false, NOW()),
 
 -- 8. Flash sale
 ('SLD-008', 'Venta Flash: Solo 24 Horas', 'Descuentos exclusivos que no te puedes perder',
  'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=1920&q=80',
- '/?ofertas=true', 'Aprovechar', 8, false, NOW()),
+ '/store', 'Aprovechar', 8, false, NOW()),
 
 -- 9. Audio deals
 ('SLD-009', 'Sonido Premium al Mejor Precio', 'Auriculares y altavoces de las mejores marcas con 35% OFF',
@@ -53,12 +53,12 @@ VALUES
 -- 10. Sports
 ('SLD-010', 'Rebajas Deportivas de Temporada', 'Ropa y equipamiento deportivo desde $14.99',
  'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1920&q=80',
- '/?ofertas=true&category=Deportes', 'Ver Deportes', 10, false, NOW()),
+ '/?category=Sports%20%26%20Outdoors', 'Ver Deportes', 10, false, NOW()),
 
 -- 11. Appliances
 ('SLD-011', 'Electrodomésticos con Hasta 45% OFF', 'Renueva tu cocina y hogar con las mejores ofertas',
  'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=80',
- '/?category=Electrodomésticos', 'Ver Ofertas', 11, false, NOW()),
+ '/?category=Home%2C%20Garden%20%26%20Furniture', 'Ver Ofertas', 11, false, NOW()),
 
 -- 12. Weekend promo
 ('SLD-012', 'Promo Fin de Semana', 'Descuentos exclusivos viernes a domingo en toda la tienda',
@@ -68,12 +68,12 @@ VALUES
 -- 13. Wearables
 ('SLD-013', 'Wearables y Smartwatches desde $49', 'La tecnología que llevas contigo a todas partes',
  'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1920&q=80',
- '/?category=Wearables', 'Descubrir', 13, false, NOW()),
+ '/?category=Jewelry%20%26%20Watches', 'Descubrir', 13, false, NOW()),
 
 -- 14. Beauty
 ('SLD-014', 'Belleza y Cuidado Personal -30%', 'Los mejores productos de belleza a precios increíbles',
  'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&q=80',
- '/?ofertas=true&category=Belleza', 'Ver Belleza', 14, false, NOW()),
+ '/?category=Health%2C%20Beauty%20%26%20Hair', 'Ver Belleza', 14, false, NOW()),
 
 -- 15. Black Friday early
 ('SLD-015', 'Pre-Black Friday: Adelántate', 'Las mejores ofertas antes que nadie — stock limitado',
