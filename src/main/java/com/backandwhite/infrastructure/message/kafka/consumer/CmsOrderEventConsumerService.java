@@ -92,7 +92,7 @@ public class CmsOrderEventConsumerService {
             return BigDecimal.ZERO;
         try {
             return new BigDecimal(amount);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             return BigDecimal.ZERO;
         }
     }

@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SlideUseCaseImpl implements SlideUseCase {
 
+    private static final String ENTITY_NAME = "Slide";
+
     private final SlideRepository slideRepository;
 
     @Override
@@ -25,7 +27,7 @@ public class SlideUseCaseImpl implements SlideUseCase {
     @Override
     @Transactional
     public Slide update(String id, Slide slide) {
-        slideRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Slide", id));
+        slideRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
         slide.setId(id);
         return slideRepository.update(slide);
     }
@@ -33,7 +35,7 @@ public class SlideUseCaseImpl implements SlideUseCase {
     @Override
     @Transactional(readOnly = true)
     public Slide findById(String id) {
-        return slideRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Slide", id));
+        return slideRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
     }
 
     @Override
@@ -57,7 +59,7 @@ public class SlideUseCaseImpl implements SlideUseCase {
     @Override
     @Transactional
     public void delete(String id) {
-        slideRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Slide", id));
+        slideRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
         slideRepository.delete(id);
     }
 

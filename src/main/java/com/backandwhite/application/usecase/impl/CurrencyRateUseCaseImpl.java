@@ -38,6 +38,15 @@ public class CurrencyRateUseCaseImpl implements CurrencyRateUseCase {
     @Override
     @Transactional(readOnly = true)
     public CurrencyRate findByCode(String code) {
+        return findByCodeInternal(code);
+    }
+
+    /**
+     * Internal lookup used by other use-case methods. Bypasses
+     * {@code @Transactional} AOP (Sonar S6809) — the calling method already holds
+     * the transaction.
+     */
+    private CurrencyRate findByCodeInternal(String code) {
         return repository.findByCurrencyCode(code.toUpperCase())
                 .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("CurrencyRate", code));
     }
@@ -45,7 +54,7 @@ public class CurrencyRateUseCaseImpl implements CurrencyRateUseCase {
     @Override
     @Transactional
     public CurrencyRate toggleActive(String code, boolean active) {
-        CurrencyRate rate = findByCode(code);
+        CurrencyRate rate = findByCodeInternal(code);
         rate.setActive(active);
         return repository.save(rate);
     }
@@ -119,8 +128,8 @@ public class CurrencyRateUseCaseImpl implements CurrencyRateUseCase {
             return amount;
         }
 
-        CurrencyRate from = findByCode(fromCode);
-        CurrencyRate to = findByCode(toCode);
+        CurrencyRate from = findByCodeInternal(fromCode);
+        CurrencyRate to = findByCodeInternal(toCode);
 
         // Convert: amount in FROM → USD → TO using Money.convertViaUsd
         return Money.of(amount).convertViaUsd(from.getRate(), to.getRate()).getAmount();

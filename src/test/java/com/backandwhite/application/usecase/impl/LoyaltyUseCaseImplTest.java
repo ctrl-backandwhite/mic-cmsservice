@@ -67,7 +67,8 @@ class LoyaltyUseCaseImplTest {
     @Test
     void updateTier_notFound() {
         when(repository.findTierById("x")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> useCase.updateTier("x", tier())).isInstanceOf(EntityNotFoundException.class);
+        LoyaltyTier t = tier();
+        assertThatThrownBy(() -> useCase.updateTier("x", t)).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -121,7 +122,8 @@ class LoyaltyUseCaseImplTest {
     @Test
     void updateRule_notFound() {
         when(repository.findRuleById("x")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> useCase.updateRule("x", rule())).isInstanceOf(EntityNotFoundException.class);
+        LoyaltyRule r = rule();
+        assertThatThrownBy(() -> useCase.updateRule("x", r)).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test

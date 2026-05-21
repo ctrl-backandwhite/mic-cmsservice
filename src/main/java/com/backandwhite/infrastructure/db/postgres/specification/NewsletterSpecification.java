@@ -8,6 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class NewsletterSpecification {
 
+    private static final String STATUS = "status";
+
     private NewsletterSpecification() {
     }
 
@@ -15,9 +17,9 @@ public class NewsletterSpecification {
         return (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
 
-            if (filters.containsKey("status")) {
+            if (filters.containsKey(STATUS)) {
                 predicate = cb.and(predicate,
-                        cb.equal(root.get("status"), NewsletterStatus.valueOf(filters.get("status").toString())));
+                        cb.equal(root.get(STATUS), NewsletterStatus.valueOf(filters.get(STATUS).toString())));
             }
             if (filters.containsKey("search")) {
                 String search = "%" + filters.get("search").toString().toLowerCase() + "%";

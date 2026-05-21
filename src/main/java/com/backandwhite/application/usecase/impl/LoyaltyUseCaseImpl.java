@@ -24,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LoyaltyUseCaseImpl implements LoyaltyUseCase {
 
+    private static final String ENTITY_TIER = "LoyaltyTier";
+    private static final String ENTITY_RULE = "LoyaltyRule";
+
     private final LoyaltyRepository loyaltyRepository;
     private final CmsEventPort cmsEventPort;
 
@@ -38,7 +41,7 @@ public class LoyaltyUseCaseImpl implements LoyaltyUseCase {
     @Override
     @Transactional
     public LoyaltyTier updateTier(String id, LoyaltyTier tier) {
-        loyaltyRepository.findTierById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("LoyaltyTier", id));
+        loyaltyRepository.findTierById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_TIER, id));
         tier.setId(id);
         return loyaltyRepository.updateTier(tier);
     }
@@ -46,8 +49,7 @@ public class LoyaltyUseCaseImpl implements LoyaltyUseCase {
     @Override
     @Transactional(readOnly = true)
     public LoyaltyTier findTierById(String id) {
-        return loyaltyRepository.findTierById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("LoyaltyTier", id));
+        return loyaltyRepository.findTierById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_TIER, id));
     }
 
     @Override
@@ -59,7 +61,7 @@ public class LoyaltyUseCaseImpl implements LoyaltyUseCase {
     @Override
     @Transactional
     public void deleteTier(String id) {
-        loyaltyRepository.findTierById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("LoyaltyTier", id));
+        loyaltyRepository.findTierById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_TIER, id));
         loyaltyRepository.deleteTier(id);
     }
 
@@ -74,7 +76,7 @@ public class LoyaltyUseCaseImpl implements LoyaltyUseCase {
     @Override
     @Transactional
     public LoyaltyRule updateRule(String id, LoyaltyRule rule) {
-        loyaltyRepository.findRuleById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("LoyaltyRule", id));
+        loyaltyRepository.findRuleById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_RULE, id));
         rule.setId(id);
         return loyaltyRepository.updateRule(rule);
     }
@@ -82,8 +84,7 @@ public class LoyaltyUseCaseImpl implements LoyaltyUseCase {
     @Override
     @Transactional(readOnly = true)
     public LoyaltyRule findRuleById(String id) {
-        return loyaltyRepository.findRuleById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("LoyaltyRule", id));
+        return loyaltyRepository.findRuleById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_RULE, id));
     }
 
     @Override
@@ -95,7 +96,7 @@ public class LoyaltyUseCaseImpl implements LoyaltyUseCase {
     @Override
     @Transactional
     public void deleteRule(String id) {
-        loyaltyRepository.findRuleById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("LoyaltyRule", id));
+        loyaltyRepository.findRuleById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_RULE, id));
         loyaltyRepository.deleteRule(id);
     }
 

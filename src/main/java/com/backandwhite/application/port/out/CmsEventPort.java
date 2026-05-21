@@ -7,6 +7,13 @@ public interface CmsEventPort {
     void publishLoyaltyPointsRedeemed(String userId, int pointsRedeemed, int totalPoints, String couponCode,
             String discountAmount);
 
+    /**
+     * Publishes a {@code gift_card.purchased} event. Has 12 String parameters by
+     * design — every field is part of the public Kafka contract consumed by the
+     * notification, order and analytics services. Refactoring to a DTO would break
+     * all downstream listeners, so we suppress S107 here.
+     */
+    @SuppressWarnings("java:S107")
     void publishGiftCardPurchased(String giftCardId, String code, String buyerId, String buyerName, String buyerEmail,
             String recipientName, String recipientEmail, String amount, String currency, String message,
             String expiryDate, String designId);

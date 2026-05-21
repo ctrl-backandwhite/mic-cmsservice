@@ -29,6 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GiftCardUseCaseImpl implements GiftCardUseCase {
 
+    private static final String ENTITY_DESIGN = "GiftCardDesign";
+    private static final String ENTITY_NAME = "GiftCard";
+
     private static final String CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final int MAX_CODE_RETRIES = 10;
@@ -47,8 +50,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     @Override
     @Transactional
     public GiftCardDesign updateDesign(String id, GiftCardDesign design) {
-        giftCardRepository.findDesignById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCardDesign", id));
+        giftCardRepository.findDesignById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_DESIGN, id));
         design.setId(id);
         return giftCardRepository.updateDesign(design);
     }
@@ -57,7 +59,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     @Transactional(readOnly = true)
     public GiftCardDesign findDesignById(String id) {
         return giftCardRepository.findDesignById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCardDesign", id));
+                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_DESIGN, id));
     }
 
     @Override
@@ -75,8 +77,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     @Override
     @Transactional
     public void deleteDesign(String id) {
-        giftCardRepository.findDesignById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCardDesign", id));
+        giftCardRepository.findDesignById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_DESIGN, id));
         giftCardRepository.deleteDesign(id);
     }
 
@@ -125,14 +126,14 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     @Override
     @Transactional(readOnly = true)
     public GiftCard findById(String id) {
-        return giftCardRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCard", id));
+        return giftCardRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public GiftCard findByCode(String code) {
         return giftCardRepository.findByCode(code)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCard", code));
+                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, code));
     }
 
     @Override
@@ -156,7 +157,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     @Transactional(readOnly = true)
     public Money getBalance(String code) {
         GiftCard card = giftCardRepository.findByCode(code)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCard", code));
+                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, code));
         return card.getBalance();
     }
 
@@ -182,7 +183,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     @Transactional
     public GiftCard claimByCode(String code, String userEmail) {
         GiftCard card = giftCardRepository.findByCode(code)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCard", code));
+                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, code));
         if (card.getStatus() != GiftCardStatus.PENDING && card.getStatus() != GiftCardStatus.ACTIVE) {
             throw GIFT_CARD_INACTIVE.toBusinessException();
         }
@@ -215,7 +216,7 @@ public class GiftCardUseCaseImpl implements GiftCardUseCase {
     @Transactional
     public GiftCardTransaction redeem(String code, Money amount, String orderId) {
         GiftCard card = giftCardRepository.findByCode(code)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("GiftCard", code));
+                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, code));
 
         if (card.getStatus() != GiftCardStatus.ACTIVE) {
             throw GIFT_CARD_INACTIVE.toBusinessException();

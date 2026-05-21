@@ -8,6 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class GiftCardSpecification {
 
+    private static final String STATUS = "status";
+
     private GiftCardSpecification() {
     }
 
@@ -15,9 +17,9 @@ public class GiftCardSpecification {
         return (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
 
-            if (filters.containsKey("status")) {
+            if (filters.containsKey(STATUS)) {
                 predicate = cb.and(predicate,
-                        cb.equal(root.get("status"), GiftCardStatus.valueOf(filters.get("status").toString())));
+                        cb.equal(root.get(STATUS), GiftCardStatus.valueOf(filters.get(STATUS).toString())));
             }
             if (filters.containsKey("search")) {
                 String search = "%" + filters.get("search").toString().toLowerCase() + "%";

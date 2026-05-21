@@ -59,7 +59,8 @@ class EmailTemplateUseCaseImplTest {
     @Test
     void update_notFound() {
         when(repository.findById("x")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> useCase.update("x", template())).isInstanceOf(EntityNotFoundException.class);
+        EmailTemplate t = template();
+        assertThatThrownBy(() -> useCase.update("x", t)).isInstanceOf(EntityNotFoundException.class);
         verify(repository, never()).update(any());
     }
 

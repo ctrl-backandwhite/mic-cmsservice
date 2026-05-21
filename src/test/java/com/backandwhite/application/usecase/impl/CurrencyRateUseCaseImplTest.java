@@ -82,7 +82,7 @@ class CurrencyRateUseCaseImplTest {
     @Test
     void syncFromApi_empty_returnsZero() {
         when(client.fetchLatestRates()).thenReturn(List.of());
-        assertThat(useCase.syncFromApi()).isEqualTo(0);
+        assertThat(useCase.syncFromApi()).isZero();
     }
 
     @Test

@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class EmailTemplateUseCaseImpl implements EmailTemplateUseCase {
 
+    private static final String ENTITY_NAME = "EmailTemplate";
+
     private final EmailTemplateRepository emailTemplateRepository;
 
     @Override
@@ -29,7 +31,7 @@ public class EmailTemplateUseCaseImpl implements EmailTemplateUseCase {
     @Override
     @Transactional
     public EmailTemplate update(String id, EmailTemplate template) {
-        emailTemplateRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("EmailTemplate", id));
+        emailTemplateRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
         template.setId(id);
         return emailTemplateRepository.update(template);
     }
@@ -38,14 +40,14 @@ public class EmailTemplateUseCaseImpl implements EmailTemplateUseCase {
     @Transactional(readOnly = true)
     public EmailTemplate findById(String id) {
         return emailTemplateRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("EmailTemplate", id));
+                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public EmailTemplate findByName(String name) {
         return emailTemplateRepository.findByName(name)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("EmailTemplate", name));
+                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, name));
     }
 
     @Override
@@ -60,7 +62,7 @@ public class EmailTemplateUseCaseImpl implements EmailTemplateUseCase {
     @Override
     @Transactional
     public void delete(String id) {
-        emailTemplateRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("EmailTemplate", id));
+        emailTemplateRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
         emailTemplateRepository.delete(id);
     }
 }

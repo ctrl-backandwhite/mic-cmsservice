@@ -47,7 +47,7 @@ class LoyaltyMachineTest {
         when(loyaltyRepository.findAllTiers()).thenReturn(List.of());
 
         LoyaltyResult r = machine.processOrderDelivery("u1", new BigDecimal("100"), "o1");
-        assertThat(r.getEarnedPoints()).isEqualTo(0);
+        assertThat(r.getEarnedPoints()).isZero();
         assertThat(r.getCurrentTier()).isEqualTo("Bronze");
         verify(loyaltyRepository, never()).saveTransaction(any());
     }
@@ -61,7 +61,7 @@ class LoyaltyMachineTest {
         when(loyaltyRepository.findAllTiers()).thenReturn(List.of());
 
         LoyaltyResult r = machine.processOrderDelivery("u1", BigDecimal.ZERO, "o1");
-        assertThat(r.getEarnedPoints()).isEqualTo(0);
+        assertThat(r.getEarnedPoints()).isZero();
         assertThat(r.isLeveledUp()).isFalse();
     }
 
@@ -77,7 +77,7 @@ class LoyaltyMachineTest {
 
         LoyaltyResult r = machine.processOrderDelivery("u1", new BigDecimal("10"), "o1");
         assertThat(r.getEarnedPoints()).isEqualTo(10);
-        assertThat(r.getBonusPoints()).isEqualTo(0);
+        assertThat(r.getBonusPoints()).isZero();
         assertThat(r.isLeveledUp()).isFalse();
         assertThat(r.getCurrentTier()).isEqualTo("Bronze");
     }

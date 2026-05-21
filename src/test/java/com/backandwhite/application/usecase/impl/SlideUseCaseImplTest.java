@@ -56,7 +56,8 @@ class SlideUseCaseImplTest {
     @Test
     void update_notFound_throws() {
         when(slideRepository.findById("x")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> useCase.update("x", slide())).isInstanceOf(EntityNotFoundException.class);
+        Slide s = slide();
+        assertThatThrownBy(() -> useCase.update("x", s)).isInstanceOf(EntityNotFoundException.class);
         verify(slideRepository, never()).update(any());
     }
 

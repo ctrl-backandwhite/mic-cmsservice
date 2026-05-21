@@ -53,7 +53,8 @@ class SeoPageUseCaseImplTest {
     @Test
     void update_notFound() {
         when(repository.findById("x")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> useCase.update("x", page())).isInstanceOf(EntityNotFoundException.class);
+        SeoPage p = page();
+        assertThatThrownBy(() -> useCase.update("x", p)).isInstanceOf(EntityNotFoundException.class);
         verify(repository, never()).update(any());
     }
 

@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class NewsletterUseCaseImpl implements NewsletterUseCase {
 
+    private static final String ENTITY_NAME = "NewsletterSubscriber";
+
     private final NewsletterRepository newsletterRepository;
     private final CmsEventPort cmsEventPort;
 
@@ -52,7 +54,7 @@ public class NewsletterUseCaseImpl implements NewsletterUseCase {
     @Transactional
     public void unsubscribe(String email) {
         NewsletterSubscriber subscriber = newsletterRepository.findByEmail(email)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("NewsletterSubscriber", email));
+                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, email));
         subscriber.setStatus(NewsletterStatus.UNSUBSCRIBED);
         subscriber.setUnsubscribedAt(Instant.now());
         newsletterRepository.update(subscriber);
@@ -62,8 +64,7 @@ public class NewsletterUseCaseImpl implements NewsletterUseCase {
     @Override
     @Transactional(readOnly = true)
     public NewsletterSubscriber findById(String id) {
-        return newsletterRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("NewsletterSubscriber", id));
+        return newsletterRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
     }
 
     @Override
@@ -78,8 +79,7 @@ public class NewsletterUseCaseImpl implements NewsletterUseCase {
     @Override
     @Transactional
     public void delete(String id) {
-        newsletterRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("NewsletterSubscriber", id));
+        newsletterRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
         newsletterRepository.delete(id);
     }
 

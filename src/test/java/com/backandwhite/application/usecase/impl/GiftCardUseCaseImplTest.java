@@ -74,7 +74,8 @@ class GiftCardUseCaseImplTest {
     @Test
     void updateDesign_notFound() {
         when(repository.findDesignById("x")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> useCase.updateDesign("x", design())).isInstanceOf(EntityNotFoundException.class);
+        GiftCardDesign d = design();
+        assertThatThrownBy(() -> useCase.updateDesign("x", d)).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -127,14 +128,14 @@ class GiftCardUseCaseImplTest {
             return g;
         });
 
-        GiftCard saved = useCase.purchase(in);
+        GiftCard saved = useCase.purchase(in, "buyer@example.com");
         assertThat(saved.getCode()).startsWith("GC-");
         assertThat(saved.getBalance()).isEqualTo(saved.getOriginalAmount());
         assertThat(saved.getStatus()).isEqualTo(GiftCardStatus.PENDING);
         assertThat(saved.getExpiryDate()).isNotNull();
         verify(repository).saveTransaction(any(GiftCardTransaction.class));
         verify(eventPort).publishGiftCardPurchased(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(),
-                any());
+                any(), any());
     }
 
     @Test
@@ -144,7 +145,7 @@ class GiftCardUseCaseImplTest {
         when(repository.findByCode(anyString())).thenReturn(Optional.empty());
         when(repository.save(any(GiftCard.class))).thenAnswer(i -> i.getArgument(0));
 
-        GiftCard saved = useCase.purchase(in);
+        GiftCard saved = useCase.purchase(in, "buyer@example.com");
         assertThat(saved.getExpiryDate()).isEqualTo(expiry);
     }
 
@@ -301,23 +302,23 @@ class GiftCardUseCaseImplTest {
     void redeem_notActive_throws() {
         GiftCard c = card().withStatus(GiftCardStatus.PENDING);
         when(repository.findByCode("C")).thenReturn(Optional.of(c));
-        assertThatThrownBy(() -> useCase.redeem("C", Money.of(new BigDecimal("10.00")), "o"))
-                .isInstanceOf(BusinessException.class);
+        Money amount = Money.of(new BigDecimal("10.00"));
+        assertThatThrownBy(() -> useCase.redeem("C", amount, "o")).isInstanceOf(BusinessException.class);
     }
 
     @Test
     void redeem_insufficient_throws() {
         GiftCard c = card();
         when(repository.findByCode("C")).thenReturn(Optional.of(c));
-        assertThatThrownBy(() -> useCase.redeem("C", Money.of(new BigDecimal("500.00")), "o"))
-                .isInstanceOf(BusinessException.class);
+        Money amount = Money.of(new BigDecimal("500.00"));
+        assertThatThrownBy(() -> useCase.redeem("C", amount, "o")).isInstanceOf(BusinessException.class);
     }
 
     @Test
     void redeem_notFound() {
         when(repository.findByCode("x")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> useCase.redeem("x", Money.of(BigDecimal.ONE), "o"))
-                .isInstanceOf(EntityNotFoundException.class);
+        Money amount = Money.of(BigDecimal.ONE);
+        assertThatThrownBy(() -> useCase.redeem("x", amount, "o")).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -330,7 +331,7 @@ class GiftCardUseCaseImplTest {
     void purchase_cannotGenerateUniqueCode_throwsIllegalState() {
         GiftCard in = GiftCard.builder().originalAmount(Money.of(new BigDecimal("10.00"))).build();
         when(repository.findByCode(anyString())).thenReturn(Optional.of(card())); // always duplicate
-        assertThatThrownBy(() -> useCase.purchase(in)).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> useCase.purchase(in, "buyer@example.com")).isInstanceOf(IllegalStateException.class);
         verify(repository, never()).save(any());
     }
 }

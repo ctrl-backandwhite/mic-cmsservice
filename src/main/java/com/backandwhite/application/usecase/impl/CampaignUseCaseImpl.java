@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CampaignUseCaseImpl implements CampaignUseCase {
 
+    private static final String ENTITY_NAME = "Campaign";
+
     private final CampaignRepository campaignRepository;
     private final CatalogPort catalogPort;
 
@@ -53,53 +55,56 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
             boolean existingIsFS = existing.getType() == CampaignType.FREE_SHIPPING;
             if (newIsFS != existingIsFS)
                 continue;
+            assertNoConflict(campaign, newScope, existing, resolveScope(existing));
+        }
+    }
 
-            CampaignScope existingScope = resolveScope(existing);
+    private void assertNoConflict(Campaign newCamp, CampaignScope newScope, Campaign existing,
+            CampaignScope existingScope) {
+        if (newScope == CampaignScope.ALL || existingScope == CampaignScope.ALL) {
+            throw new BusinessException("OV001", "Conflicto con campana '" + existing.getName()
+                    + "': una campana global no puede coexistir con otra en el mismo periodo");
+        }
+        if (newScope == CampaignScope.CATEGORIES && existingScope == CampaignScope.CATEGORIES) {
+            assertNoCategoryOverlap(newCamp, existing);
+        } else if (newScope == CampaignScope.PRODUCTS && existingScope == CampaignScope.PRODUCTS) {
+            assertNoProductOverlap(newCamp, existing);
+        } else if (newScope == CampaignScope.CATEGORIES && existingScope == CampaignScope.PRODUCTS) {
+            assertNoCrossOverlap(newCamp.getAppliesToCategories(), existing.getAppliesToProducts(), existing,
+                    "productos de otra campana pertenecen a categorias afectadas");
+        } else if (newScope == CampaignScope.PRODUCTS && existingScope == CampaignScope.CATEGORIES) {
+            assertNoCrossOverlap(existing.getAppliesToCategories(), newCamp.getAppliesToProducts(), existing,
+                    "productos afectados pertenecen a categorias de otra campana");
+        }
+    }
 
-            if (newScope == CampaignScope.ALL || existingScope == CampaignScope.ALL) {
-                throw new BusinessException("OV001", "Conflicto con campana '" + existing.getName()
-                        + "': una campana global no puede coexistir con otra en el mismo periodo");
-            }
+    private void assertNoCategoryOverlap(Campaign newCamp, Campaign existing) {
+        Set<String> expandedNew = catalogPort.expandWithSubcategories(newCamp.getAppliesToCategories());
+        Set<String> expandedExisting = catalogPort.expandWithSubcategories(existing.getAppliesToCategories());
+        Set<String> intersection = new HashSet<>(expandedNew);
+        intersection.retainAll(expandedExisting);
+        if (!intersection.isEmpty()) {
+            throw new BusinessException("OV002",
+                    "Conflicto con campana '" + existing.getName() + "': categorias solapadas (incluye subcategorias)");
+        }
+    }
 
-            if (newScope == CampaignScope.CATEGORIES && existingScope == CampaignScope.CATEGORIES) {
-                Set<String> expandedNew = catalogPort.expandWithSubcategories(campaign.getAppliesToCategories());
-                Set<String> expandedExisting = catalogPort.expandWithSubcategories(existing.getAppliesToCategories());
-                Set<String> intersection = new HashSet<>(expandedNew);
-                intersection.retainAll(expandedExisting);
-                if (!intersection.isEmpty()) {
-                    throw new BusinessException("OV002", "Conflicto con campana '" + existing.getName()
-                            + "': categorias solapadas (incluye subcategorias)");
-                }
-            }
+    private void assertNoProductOverlap(Campaign newCamp, Campaign existing) {
+        Set<String> intersection = new HashSet<>(newCamp.getAppliesToProducts());
+        intersection.retainAll(existing.getAppliesToProducts());
+        if (!intersection.isEmpty()) {
+            throw new BusinessException("OV003",
+                    "Conflicto con campana '" + existing.getName() + "': productos en comun");
+        }
+    }
 
-            if (newScope == CampaignScope.PRODUCTS && existingScope == CampaignScope.PRODUCTS) {
-                Set<String> intersection = new HashSet<>(campaign.getAppliesToProducts());
-                intersection.retainAll(existing.getAppliesToProducts());
-                if (!intersection.isEmpty()) {
-                    throw new BusinessException("OV003",
-                            "Conflicto con campana '" + existing.getName() + "': productos en comun");
-                }
-            }
-
-            if (newScope == CampaignScope.CATEGORIES && existingScope == CampaignScope.PRODUCTS) {
-                Set<String> expandedCats = catalogPort.expandWithSubcategories(campaign.getAppliesToCategories());
-                Map<String, String> prodCatMap = catalogPort.getProductCategoryMap(existing.getAppliesToProducts());
-                boolean conflict = prodCatMap.values().stream().anyMatch(expandedCats::contains);
-                if (conflict) {
-                    throw new BusinessException("OV004", "Conflicto cruzado con campana '" + existing.getName()
-                            + "': productos de otra campana pertenecen a categorias afectadas");
-                }
-            }
-
-            if (newScope == CampaignScope.PRODUCTS && existingScope == CampaignScope.CATEGORIES) {
-                Set<String> expandedCats = catalogPort.expandWithSubcategories(existing.getAppliesToCategories());
-                Map<String, String> prodCatMap = catalogPort.getProductCategoryMap(campaign.getAppliesToProducts());
-                boolean conflict = prodCatMap.values().stream().anyMatch(expandedCats::contains);
-                if (conflict) {
-                    throw new BusinessException("OV004", "Conflicto cruzado con campana '" + existing.getName()
-                            + "': productos afectados pertenecen a categorias de otra campana");
-                }
-            }
+    private void assertNoCrossOverlap(List<String> categories, List<String> products, Campaign existing,
+            String detailMsg) {
+        Set<String> expandedCats = catalogPort.expandWithSubcategories(categories);
+        Map<String, String> prodCatMap = catalogPort.getProductCategoryMap(products);
+        if (prodCatMap.values().stream().anyMatch(expandedCats::contains)) {
+            throw new BusinessException("OV004",
+                    "Conflicto cruzado con campana '" + existing.getName() + "': " + detailMsg);
         }
     }
 
@@ -114,7 +119,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     @Override
     @Transactional
     public Campaign update(String id, Campaign campaign) {
-        campaignRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));
+        campaignRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
         campaign.setId(id);
         validateCampaign(campaign);
         checkOverlap(campaign);
@@ -124,7 +129,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     @Override
     @Transactional(readOnly = true)
     public Campaign findById(String id) {
-        return campaignRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));
+        return campaignRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
     }
 
     @Override
@@ -151,7 +156,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     @Override
     @Transactional
     public void delete(String id) {
-        campaignRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));
+        campaignRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
         campaignRepository.delete(id);
     }
 
@@ -159,7 +164,7 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
     @Transactional
     public void toggleActive(String id) {
         Campaign campaign = campaignRepository.findById(id)
-                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("Campaign", id));
+                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
         boolean wasActive = campaign.isActive();
         campaign.setActive(!wasActive);
         if (!wasActive) {
@@ -177,30 +182,35 @@ public class CampaignUseCaseImpl implements CampaignUseCase {
         BigDecimal value = c.getValue() != null ? c.getValue().getAmount() : null;
 
         switch (type) {
-            case PERCENTAGE, FLASH -> {
-                if (value == null || value.compareTo(BigDecimal.ZERO) <= 0
-                        || value.compareTo(BigDecimal.valueOf(100)) > 0) {
-                    throw new BusinessException("VE003",
-                            type + " campaign value must be between 0 and 100 (percentage)");
-                }
+            case PERCENTAGE, FLASH -> validatePercentageValue(type, value);
+            case FIXED -> validateFixedValue(value);
+            case BUNDLE -> validateBundleQuantities(c);
+            case BUY2GET1, FREE_SHIPPING -> {
+                // No extra validation: BUY2GET1 derives qty from items, FREE_SHIPPING has no
+                // value.
             }
-            case FIXED -> {
-                if (value == null || value.compareTo(BigDecimal.ZERO) <= 0) {
-                    throw new BusinessException("VE004", "FIXED campaign value must be > 0");
-                }
-            }
-            case BUNDLE -> {
-                if (c.getBuyQty() == null || c.getBuyQty() <= 0) {
-                    throw new BusinessException("VE005", "BUNDLE campaign requires buyQty > 0");
-                }
-                if (c.getGetQty() == null || c.getGetQty() <= 0) {
-                    throw new BusinessException("VE006", "BUNDLE campaign requires getQty > 0");
-                }
-            }
-            case BUY2GET1 -> {
-            }
-            case FREE_SHIPPING -> {
-            }
+            default -> throw new BusinessException("VE007", "Unsupported campaign type: " + type);
+        }
+    }
+
+    private void validatePercentageValue(CampaignType type, BigDecimal value) {
+        if (value == null || value.compareTo(BigDecimal.ZERO) <= 0 || value.compareTo(BigDecimal.valueOf(100)) > 0) {
+            throw new BusinessException("VE003", type + " campaign value must be between 0 and 100 (percentage)");
+        }
+    }
+
+    private void validateFixedValue(BigDecimal value) {
+        if (value == null || value.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessException("VE004", "FIXED campaign value must be > 0");
+        }
+    }
+
+    private void validateBundleQuantities(Campaign c) {
+        if (c.getBuyQty() == null || c.getBuyQty() <= 0) {
+            throw new BusinessException("VE005", "BUNDLE campaign requires buyQty > 0");
+        }
+        if (c.getGetQty() == null || c.getGetQty() <= 0) {
+            throw new BusinessException("VE006", "BUNDLE campaign requires getQty > 0");
         }
     }
 }

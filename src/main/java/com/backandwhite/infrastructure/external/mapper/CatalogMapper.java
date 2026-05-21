@@ -36,21 +36,25 @@ public interface CatalogMapper {
 
     private void buildChildrenIndex(List<CategoryNodeDto> nodes, Map<String, List<String>> index) {
         for (CategoryNodeDto node : nodes) {
-            if (node == null || node.id() == null) {
-                continue;
-            }
-            List<CategoryNodeDto> subs = node.subCategories();
-            if (subs == null || subs.isEmpty()) {
-                continue;
-            }
-            List<String> childIds = new ArrayList<>();
-            for (CategoryNodeDto sub : subs) {
-                if (sub != null && sub.id() != null) {
-                    childIds.add(sub.id());
-                }
-            }
-            index.put(node.id(), childIds);
-            buildChildrenIndex(subs, index);
+            indexNodeChildren(node, index);
         }
+    }
+
+    private void indexNodeChildren(CategoryNodeDto node, Map<String, List<String>> index) {
+        if (node == null || node.id() == null) {
+            return;
+        }
+        List<CategoryNodeDto> subs = node.subCategories();
+        if (subs == null || subs.isEmpty()) {
+            return;
+        }
+        List<String> childIds = new ArrayList<>();
+        for (CategoryNodeDto sub : subs) {
+            if (sub != null && sub.id() != null) {
+                childIds.add(sub.id());
+            }
+        }
+        index.put(node.id(), childIds);
+        buildChildrenIndex(subs, index);
     }
 }

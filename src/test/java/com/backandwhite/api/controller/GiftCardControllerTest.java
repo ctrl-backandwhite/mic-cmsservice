@@ -90,12 +90,12 @@ class GiftCardControllerTest {
     @Test
     void purchase_ok() {
         GiftCardPurchaseDtoIn in = GiftCardPurchaseDtoIn.builder().amount(new BigDecimal("10")).recipientName("r")
-                .recipientEmail("r@r.com").build();
+                .recipientEmail("r@r.com").buyerEmail("buyer@example.com").build();
         GiftCard c = GiftCard.builder().build();
         when(mapper.toPurchaseDomain(any())).thenReturn(c);
-        when(useCase.purchase(any())).thenReturn(c);
+        when(useCase.purchase(any(), any())).thenReturn(c);
         when(mapper.toDto(c)).thenReturn(GiftCardDtoOut.builder().build());
-        assertThat(controller.purchase("tok", "u1", in).getStatusCode().value()).isEqualTo(201);
+        assertThat(controller.purchase("tok", "u1", null, in).getStatusCode().value()).isEqualTo(201);
     }
 
     @Test

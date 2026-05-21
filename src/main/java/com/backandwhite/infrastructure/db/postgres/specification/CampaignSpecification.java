@@ -8,6 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class CampaignSpecification {
 
+    private static final String ACTIVE = "active";
+
     private CampaignSpecification() {
     }
 
@@ -15,9 +17,9 @@ public class CampaignSpecification {
         return (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
 
-            if (filters.containsKey("active")) {
+            if (filters.containsKey(ACTIVE)) {
                 predicate = cb.and(predicate,
-                        cb.equal(root.get("active"), Boolean.valueOf(filters.get("active").toString())));
+                        cb.equal(root.get(ACTIVE), Boolean.valueOf(filters.get(ACTIVE).toString())));
             }
             if (filters.containsKey("type")) {
                 predicate = cb.and(predicate,

@@ -220,6 +220,13 @@ public final class CurrencyMetadataProvider {
         put("GGP", "Guernsey Pound", "£", "Guernsey", "GG", "🇬🇬", "Europe/Guernsey", "en");
     }
 
+    /**
+     * Static seeding helper. Has 8 parameters because every column of the
+     * {@link CurrencyMeta} record is required to register a currency — using a
+     * builder or DTO here would inflate the static initializer with hundreds of
+     * extra lines for no benefit. Suppression is intentional.
+     */
+    @SuppressWarnings("java:S107")
     private static void put(String code, String name, String symbol, String country, String cc, String flag, String tz,
             String lang) {
         META.put(code, new CurrencyMeta(name, symbol, country, cc, flag, tz, lang));

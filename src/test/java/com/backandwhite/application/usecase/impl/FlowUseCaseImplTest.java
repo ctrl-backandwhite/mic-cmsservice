@@ -56,7 +56,8 @@ class FlowUseCaseImplTest {
     @Test
     void update_notFound() {
         when(repository.findById("x")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> useCase.update("x", flow())).isInstanceOf(EntityNotFoundException.class);
+        Flow f = flow();
+        assertThatThrownBy(() -> useCase.update("x", f)).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -115,7 +116,8 @@ class FlowUseCaseImplTest {
     @Test
     void syncSteps_notFound() {
         when(repository.findById("x")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> useCase.syncSteps("x", List.of(step()))).isInstanceOf(EntityNotFoundException.class);
+        List<FlowStep> steps = List.of(step());
+        assertThatThrownBy(() -> useCase.syncSteps("x", steps)).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test

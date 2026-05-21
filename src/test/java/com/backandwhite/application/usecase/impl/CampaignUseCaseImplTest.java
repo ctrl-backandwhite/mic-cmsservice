@@ -226,8 +226,8 @@ class CampaignUseCaseImplTest {
     @Test
     void update_notFound() {
         when(repository.findById("x")).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> useCase.update("x", pct(new BigDecimal("10"))))
-                .isInstanceOf(EntityNotFoundException.class);
+        Campaign campaign = pct(new BigDecimal("10"));
+        assertThatThrownBy(() -> useCase.update("x", campaign)).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test

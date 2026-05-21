@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SeoPageUseCaseImpl implements SeoPageUseCase {
 
+    private static final String ENTITY_NAME = "SeoPage";
+
     private final SeoPageRepository seoPageRepository;
 
     @Override
@@ -28,7 +30,7 @@ public class SeoPageUseCaseImpl implements SeoPageUseCase {
     @Override
     @Transactional
     public SeoPage update(String id, SeoPage seoPage) {
-        seoPageRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", id));
+        seoPageRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
         seoPage.setId(id);
         return seoPageRepository.update(seoPage);
     }
@@ -36,13 +38,14 @@ public class SeoPageUseCaseImpl implements SeoPageUseCase {
     @Override
     @Transactional(readOnly = true)
     public SeoPage findById(String id) {
-        return seoPageRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", id));
+        return seoPageRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public SeoPage findByPath(String path) {
-        return seoPageRepository.findByPath(path).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", path));
+        return seoPageRepository.findByPath(path)
+                .orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, path));
     }
 
     @Override
@@ -56,7 +59,7 @@ public class SeoPageUseCaseImpl implements SeoPageUseCase {
     @Override
     @Transactional
     public void delete(String id) {
-        seoPageRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound("SeoPage", id));
+        seoPageRepository.findById(id).orElseThrow(() -> ENTITY_NOT_FOUND.toEntityNotFound(ENTITY_NAME, id));
         seoPageRepository.delete(id);
     }
 }

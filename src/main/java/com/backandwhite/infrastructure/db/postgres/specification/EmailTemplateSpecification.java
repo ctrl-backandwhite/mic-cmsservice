@@ -8,6 +8,9 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class EmailTemplateSpecification {
 
+    private static final String CATEGORY = "category";
+    private static final String TRIGGER_TYPE = "triggerType";
+
     private EmailTemplateSpecification() {
     }
 
@@ -15,12 +18,12 @@ public class EmailTemplateSpecification {
         return (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
 
-            if (filters.containsKey("category")) {
-                predicate = cb.and(predicate, cb.equal(root.get("category"), filters.get("category").toString()));
+            if (filters.containsKey(CATEGORY)) {
+                predicate = cb.and(predicate, cb.equal(root.get(CATEGORY), filters.get(CATEGORY).toString()));
             }
-            if (filters.containsKey("triggerType")) {
+            if (filters.containsKey(TRIGGER_TYPE)) {
                 predicate = cb.and(predicate,
-                        cb.equal(root.get("triggerType"), EmailTrigger.valueOf(filters.get("triggerType").toString())));
+                        cb.equal(root.get(TRIGGER_TYPE), EmailTrigger.valueOf(filters.get(TRIGGER_TYPE).toString())));
             }
             if (filters.containsKey("search")) {
                 String search = "%" + filters.get("search").toString().toLowerCase() + "%";

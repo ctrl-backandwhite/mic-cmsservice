@@ -151,13 +151,13 @@ class LoyaltyControllerTest {
     void getRedemptionRate_withActiveRule() {
         LoyaltyRule r = LoyaltyRule.builder().action(LoyaltyAction.REDEMPTION).pointsPerUnit(50).active(true).build();
         when(useCase.findAllRules()).thenReturn(List.of(r));
-        assertThat(controller.getRedemptionRate("tok").getBody().get("pointsPerDollar")).isEqualTo(50);
+        assertThat(controller.getRedemptionRate("tok").getBody()).containsEntry("pointsPerDollar", 50);
     }
 
     @Test
     void getRedemptionRate_defaults() {
         when(useCase.findAllRules()).thenReturn(List.of());
-        assertThat(controller.getRedemptionRate("tok").getBody().get("pointsPerDollar")).isEqualTo(100);
+        assertThat(controller.getRedemptionRate("tok").getBody()).containsEntry("pointsPerDollar", 100);
     }
 
     @Test
